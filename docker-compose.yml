@@ -1,0 +1,57 @@
+#docker-compose.yml
+version: "3.8"
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: app_development
+    volumes:
+      - ./db/postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: ./backend
+    command: bash -c "bundle install && rails db:migrate && rails s -b 0.0.0.0"
+    volumes:
+      - ./backend:/app
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/app_development
+      # 必要な環境変数はここに
+      # CLERK_SECRET_KEY: your_clerk_secret
+      # OPENAI_API_KEY: your_openai_api_key
+      # AWS_ACCESS_KEY_ID: localstack
+      # AWS_SECRET_ACCESS_KEY: localstack
+      # S3_ENDPOINT: http://localstack:4566
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - localstack
+
+  frontend:
+    build:
+      context: ./frontend
+    command: bash -c "npm install && npm run dev"
+    volumes:
+    - ./frontend:/app 
+    ports:
+      - "4000:3000"
+    depends_on:
+      - backend
+
+  localstack:
+    image: localstack/localstack:latest
+    environment:
+      - SERVICES=s3
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+    ports:
+      - "4566:4566"
+    volumes:
+      - ./docker/localstack:/docker-entrypoint-initaws.d
+      - /var/run/docker.sock:/var/run/docker.sock

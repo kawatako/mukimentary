@@ -1,0 +1,14 @@
+/db/postgres-data
+/frontend/node_modules
+/backend/tmp
+/backend/log
+/backend/vendor/bundle
+.env
+.env*
+/backend/.env
+/frontend/.env
+/backend/.env.example
+/frontend/.env.example
+node_modules/
+.next/
+.DS_Store
