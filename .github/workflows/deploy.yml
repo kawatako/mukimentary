@@ -1,0 +1,26 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]   # mainブランチにpushされたら実行
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      # ① Vercel Deploy Hookがある場合、ここで本番デプロイを実行
+      # 下のURLを実際のDeploy Hookに差し替え
+      # - name: Call Vercel Deploy Hook
+      #   run: curl -X POST ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+      - name: (Sample) Deploy to Vercel (commented out)
+        run: echo "Vercel Deploy Hookは未設定のためコメントアウト中"
+
+  deploy-backend:
+    runs-on: ubuntu-latest
+    steps:
+      # ② Render Deploy Hookがある場合、ここでAPI本番デプロイを実行
+      # 下のURLを実際のDeploy Hookに差し替え
+      # - name: Call Render Deploy Hook
+      #   run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+      - name: (Sample) Deploy to Render (commented out)
+        run: echo "Render Deploy Hookは未設定のためコメントアウト中"

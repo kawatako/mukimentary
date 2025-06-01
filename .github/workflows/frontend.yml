@@ -1,0 +1,51 @@
+name: Frontend CI
+
+on:
+  push:
+    paths:
+      - 'frontend/**'
+  pull_request:
+    paths:
+      - 'frontend/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      # ① リポジトリの内容を取得
+      - uses: actions/checkout@v4
+
+      # ② Node.js 20をセットアップ
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # ③ 依存パッケージをインストール（npm ci: package-lock.jsonと同期）
+      - name: Install dependencies
+        run: npm ci
+
+      # ④ Lint（ESLint）を実行
+      - name: Lint
+        run: npm run lint
+
+      # ⑤ TypeScriptの型チェック
+      - name: Type check
+        run: npm run typecheck
+
+      # ⑥ Next.jsのビルド
+      - name: Build
+        run: npm run build
+
+      # ⑦（後から追加できるポイント）Jestテスト導入後、下のコメントアウトを外すだけ！
+      # - name: Run Jest tests
+      #   run: npm test -- --ci
+
+      # ⑧（後から追加できるポイント）E2Eテスト導入時はここに追加
+      # - name: Run Playwright tests
+      #   run: npx playwright test
