@@ -1,0 +1,65 @@
+name: Backend CI
+
+on:
+  push:
+    paths:
+      - 'backend/**'
+  pull_request:
+    paths:
+      - 'backend/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    # ▼ CI上でPostgreSQLを使えるようにDBサービスを用意
+    services:
+      db:
+        image: postgres:15
+        ports: ['5432:5432']
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: app_test
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      RAILS_ENV: test
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/app_test
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      # ① リポジトリの内容を取得
+      - uses: actions/checkout@v4
+
+      # ② Ruby 3.3.6 をセットアップ
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3.6
+          bundler-cache: true
+
+      # ③ Gemをインストール（bundle install）
+      - name: Install dependencies
+        run: bundle install --jobs 4 --retry 3
+
+      # ④ DBを作成してスキーマをロード（rails db:create, db:schema:load）
+      - name: Set up database
+        run: |
+          bundle exec rails db:create
+          bundle exec rails db:schema:load
+
+      # ⑤（後から追加できるポイント）RSpecが導入されたら下のコメントアウトを外す
+      # - name: Run RSpec
+      #   run: bundle exec rspec
+
+      # ⑥（後から追加できるポイント）Rubocop, Brakemanなど静的解析もここで追加可能
+      # - name: Run Rubocop
+      #   run: bundle exec rubocop
