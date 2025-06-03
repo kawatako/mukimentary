@@ -1,6 +1,7 @@
 // frontend/app/cheers/[id]/edit/page.tsx
 import { cookies } from "next/headers";
-import { getCheerById, getCheerPresets, updateCheer } from "@/lib/server/cheers";
+import { getCheerById, updateCheer } from "@/lib/server/cheers";
+import { getCheerPresets } from "@/lib/server/cheerPresets";
 import EditCheerForm from "@/components/cheer/EditCheerForm";
 import { redirect, notFound } from "next/navigation";
 import type { CheerFormState } from "@/lib/types/cheer";

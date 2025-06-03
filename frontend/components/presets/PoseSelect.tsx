@@ -1,5 +1,5 @@
 // frontend/components/presets/PoseSelect.tsx
-import type { Pose } from "@/lib/server/cheerPresets";
+import type { Pose } from "@/lib/types/prests";
 
 type Props = {
   value: number | "";

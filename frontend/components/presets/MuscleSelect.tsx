@@ -1,5 +1,5 @@
 // frontend/components/presets/MuscleSelect.tsx
-import type { Muscle } from "@/lib/server/cheerPresets";
+import type { Muscle } from "@/lib/types/prests";
 
 type Props = {
   value: number | "";
