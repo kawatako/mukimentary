@@ -1,22 +1,13 @@
 // frontend/components/presets/PoseSelect.tsx
-import { usePoses } from "@/lib/hooks/useCheerPresets";
-
-type Pose = {
-  id: number;
-  name: string;
-  description: string;
-  position: number;
-};
+import type { Pose } from "@/lib/server/cheerPresets";
 
 type Props = {
   value: number | "";
   onChange: (id: number | "") => void;
+  poses: Pose[];
 };
 
-export default function PoseSelect({ value, onChange }: Props) {
-  const { data, isLoading } = usePoses();
-  if (isLoading) return <span>読み込み中...</span>;
-  if (!data) return <span>データなし</span>;
+export default function PoseSelect({ value, onChange, poses }: Props) {
   return (
     <select
       value={value ?? ""}
@@ -26,7 +17,7 @@ export default function PoseSelect({ value, onChange }: Props) {
       }}
     >
       <option value="">ポーズを選択</option>
-      {data.map((pose: Pose) => (
+      {poses.map((pose) => (
         <option key={pose.id} value={pose.id}>
           {pose.name}（{pose.description}）
         </option>

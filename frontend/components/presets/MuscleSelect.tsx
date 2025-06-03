@@ -1,22 +1,13 @@
 // frontend/components/presets/MuscleSelect.tsx
-import { useMuscles } from "@/lib/hooks/useCheerPresets";
-
-type Muscle = {
-  id: number;
-  name: string;
-  description: string;
-  position: number;
-};
+import type { Muscle } from "@/lib/server/cheerPresets";
 
 type Props = {
   value: number | "";
   onChange: (id: number | "") => void;
+  muscles: Muscle[];
 };
 
-export default function MuscleSelect({ value, onChange }: Props) {
-  const { data, isLoading } = useMuscles();
-  if (isLoading) return <span>読み込み中...</span>;
-  if (!data) return <span>データなし</span>;
+export default function MuscleSelect({ value, onChange, muscles }: Props) {
   return (
     <select
       value={value ?? ""}
@@ -26,7 +17,7 @@ export default function MuscleSelect({ value, onChange }: Props) {
       }}
     >
       <option value="">筋肉部位を選択</option>
-      {data.map((muscle: Muscle) => (
+      {muscles.map((muscle) => (
         <option key={muscle.id} value={muscle.id}>
           {muscle.name}（{muscle.description}）
         </option>
