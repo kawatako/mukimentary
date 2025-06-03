@@ -47,6 +47,7 @@ export default async function EditCheerPage({ params }: { params: { id: string }
           cheerTypeId: cheer.cheer_type_id || "",
           muscleId: cheer.muscle_id || "",
           poseId: cheer.pose_id || "",
+          cheerMode: cheer.cheer_mode || "manual", 
         }}
         onSubmit={handleSubmit}
       />

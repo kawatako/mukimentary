@@ -1,4 +1,7 @@
-// frontend/types/cheer.ts
+// frontend/lib/types/cheer.ts
+//掛け声関連の型定義
+
+//掛け声の型
 export type Cheer = {
   id: number;
   text: string;
@@ -16,9 +19,37 @@ export type Cheer = {
   pose?: { id: number; name: string; description?: string };
 };
 
+// 保存用フォーム状態（既存を少し整理）
 export type CheerFormState = {
   text: string;
-  cheerTypeId: number | "";
+  cheerTypeId: number | "";  // 型名一貫性のため camelCase
   muscleId: number | "";
   poseId: number | "";
+  imageUrl?: string | null;
+  keyword?: string | null;
+  cheerMode: "manual" | "ai" | "image_ai";
 };
+
+// 掛け声AI生成リクエスト（テキスト版）
+export type CheerGenerateRequest = {
+  cheer_type?: string;
+  muscle?: string;
+  pose?: string;
+  keyword?: string;
+};
+
+// 掛け声AI生成リクエスト（画像版）
+export type CheerGenerateByImageRequest = {
+  image_url: string;
+  cheer_type?: string;
+  muscle?: string;
+  pose?: string;
+  keyword?: string;
+};
+
+// 掛け声AI生成レスポンス
+export type CheerGenerateResponse = {
+  result: string; // 生成された掛け声テキスト
+  error?: string; // エラー発生時のみ
+};
+

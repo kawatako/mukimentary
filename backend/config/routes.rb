@@ -1,8 +1,13 @@
-#backend/config/routes.rb
+# backend/config/routes.rb
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
-      resources :cheers, only: [:index, :show, :create, :update, :destroy]
+      resources :cheers, only: [:index, :show, :create, :update, :destroy] do
+        collection do
+          post :generate          # /api/v1/cheers/generate
+          post :generate_by_image # /api/v1/cheers/generate_by_image
+        end
+      end
       resources :cheer_types, only: [:index]
       resources :muscles, only: [:index]
       resources :poses, only: [:index]
