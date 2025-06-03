@@ -1,3 +1,5 @@
+//frontend/lib/types/prests.ts
+// プリセット関連の型定義
 
 export type Pose = {
   id: number;

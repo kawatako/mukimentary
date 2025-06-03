@@ -1,4 +1,4 @@
-// frontend/components/cheer/CheerForm.tsx
+//frontend/components/cheer/CheerManualForm.tsx
 "use client";
 
 import { useState } from "react";
@@ -13,7 +13,7 @@ type Props = {
   onSubmit: (form: CheerFormState) => void | Promise<void>;
 };
 
-export default function CheerForm({
+export default function CheerManualForm({
   cheerTypes,
   muscles,
   poses,
@@ -51,7 +51,7 @@ export default function CheerForm({
       onSubmit={handleSubmit}
       className="space-y-4 p-4 border rounded-xl bg-white shadow-md max-w-lg mx-auto"
     >
-      <h2 className="text-lg font-bold">掛け声を作成</h2>
+      <h2 className="text-lg font-bold">手動で掛け声を作成</h2>
       <div>
         <label className="block font-semibold">掛け声テキスト（20字以内）</label>
         <input

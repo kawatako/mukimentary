@@ -1,4 +1,4 @@
-# app/controllers/api/v1/cheers_controller.rb
+# backend/app/controllers/api/v1/cheers_controller.rb
 module Api
   module V1
     class CheersController < ApplicationController
@@ -46,10 +46,81 @@ module Api
         head :no_content
       end
 
+      # POST /api/v1/cheers/generate
+      # 文字入力から掛け声生成
+      def generate
+          # 回数制限チェック
+        limit = AiGenerationLimit.for(@current_user, "text_ai")
+          unless limit.available?
+          message =
+            if limit.bonus_count > 0
+              "1日の利用制限を超えました、また明日お試しください"
+            else
+              "1日の利用制限を超えました。サービスをシェアして利用回数を追加できます。"
+            end
+          return render json: { error: message }, status: :forbidden
+        end
+        # 制限OKならカウントアップ
+        limit.increment_count!
+        # パラメータ検証（空欄は空文字に）
+        %i[cheer_type muscle pose keyword].each do |param|
+          params[param] ||= ""
+        end
+
+        # サービス層でAI生成
+        cheer_text = CheerGeneratorService.generate_from_text(
+          cheer_type: params[:cheer_type],
+          muscle: params[:muscle],
+          pose: params[:pose],
+          keyword: params[:keyword]
+        )
+
+        render json: { result: cheer_text }
+      rescue => e
+      render json: { error: "1日の利用制限を超えました。サービスをシェアして利用回数を追加できます。" }, status: :forbidden
+      end
+
+      # POST /api/v1/cheers/generate_by_image
+      # 画像＋テキスト入力から掛け声生成
+      def generate_by_image
+          # 回数制限チェック
+        limit = AiGenerationLimit.for(@current_user, "image_ai")
+        unless limit.available?
+          message =
+            if limit.bonus_count > 0
+              "1日の利用制限を超えました、また明日お試しください"
+            else
+              "1日の利用制限を超えました。サービスをシェアして利用回数を追加できます。"
+            end
+          return render json: { error: message }, status: :forbidden
+        end
+        limit.increment_count!
+        %i[cheer_type muscle pose keyword].each do |param|
+          params[param] ||= ""
+        end
+        image_url = params[:image_url]
+        return render json: { error: "画像URLがありません" }, status: :unprocessable_entity if image_url.blank?
+
+        cheer_text = CheerGeneratorService.generate_from_image(
+          image_url: image_url,
+          cheer_type: params[:cheer_type],
+          muscle: params[:muscle],
+          pose: params[:pose],
+          keyword: params[:keyword]
+        )
+
+        render json: { result: cheer_text }
+      rescue => e
+      render json: { error: "1日の利用制限を超えました。サービスをシェアして利用回数を追加できます。" }, status: :forbidden
+      end
+
       private
 
       def cheer_params
-        params.require(:cheer).permit(:text, :cheer_type_id, :muscle_id, :pose_id, :cheer_mode, :image_url, :keyword)
+        params.require(:cheer).permit(
+          :text, :cheer_type_id, :muscle_id, :pose_id,
+          :cheer_mode, :image_url, :keyword
+        )
       end
     end
   end
