@@ -1,37 +1,35 @@
-// frontend/components/cheer/CheerForm.tsx
+// frontend/components/cheer/EditCheerForm.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import type { CheerType, Muscle, Pose } from "@/lib/server/cheerPresets";
-
-type CheerFormState = {
-  text: string;
-  cheerTypeId: number | "";
-  muscleId: number | "";
-  poseId: number | "";
-};
+import type { CheerFormState } from "@/lib/types/cheer";
 
 type Props = {
+  cheerId: number;
   cheerTypes: CheerType[];
   muscles: Muscle[];
   poses: Pose[];
+  initialForm: CheerFormState;
   onSubmit: (form: CheerFormState) => void | Promise<void>;
 };
 
-export default function CheerForm({
+export default function EditCheerForm({
   cheerTypes,
   muscles,
   poses,
+  initialForm,
   onSubmit,
 }: Props) {
-  const [form, setForm] = useState<CheerFormState>({
-    text: "",
-    cheerTypeId: "",
-    muscleId: "",
-    poseId: "",
-  });
+  // 初期値をstateにセット
+  const [form, setForm] = useState<CheerFormState>(initialForm);
   const [error, setError] = useState<string | null>(null);
+
+  // 初期値が後から変わった場合にも追従
+  useEffect(() => {
+    setForm(initialForm);
+  }, [initialForm]);
 
   const handleChange = <K extends keyof CheerFormState>(key: K, value: CheerFormState[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -56,7 +54,7 @@ export default function CheerForm({
       onSubmit={handleSubmit}
       className="space-y-4 p-4 border rounded-xl bg-white shadow-md max-w-lg mx-auto"
     >
-      <h2 className="text-lg font-bold">掛け声を作成</h2>
+      <h2 className="text-lg font-bold">掛け声を編集</h2>
       <div>
         <label className="block font-semibold">掛け声テキスト（20字以内）</label>
         <input
