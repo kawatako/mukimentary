@@ -7,12 +7,11 @@
 @theme {
   --font-display: "Arial", sans-serif;
   --color-primary: #1d4ed8;
-  /* 他のカスタムプロパティ */
 }
 
 body {
   font-family: var(--font-display);
-  color: var(--color-primary);
+  color: var(--color-foreground);
 }
 
 @theme inline {

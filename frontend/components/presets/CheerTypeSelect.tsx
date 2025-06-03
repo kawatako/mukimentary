@@ -1,5 +1,5 @@
 // frontend/components/presets/CheerTypeSelect.tsx
-import type { CheerType } from "@/lib/server/cheerPresets";
+import type { CheerType } from "@/lib/types/prests";
 
 type Props = {
   value: number | "";

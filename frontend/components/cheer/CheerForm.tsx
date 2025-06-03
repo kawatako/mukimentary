@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import type { CheerType, Muscle, Pose } from "@/lib/server/cheerPresets";
+import type { CheerType, Muscle, Pose } from "@/lib/types/prests";
 
 type CheerFormState = {
   text: string;
