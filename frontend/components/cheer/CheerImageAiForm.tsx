@@ -8,12 +8,15 @@ import type { CheerFormState } from "@/lib/types/cheer";
 import { generateCheerByImage } from "@/lib/api/cheers";
 import { useImageUploader } from "@/lib/hooks/useImageUploader";
 import Image from "next/image";
+import { GenerateCountInfo } from "@/components/cheer/GenerateCountInfo";
 
 type Props = {
   cheerTypes: CheerType[];
   muscles: Muscle[];
   poses: Pose[];
   onSubmit: (form: CheerFormState) => void | Promise<void>;
+  remaining: number | null; // 親管理の残り回数
+  onChangeRemaining: (value: number | null) => void; // 親への残数通知
 };
 
 export default function CheerImageAiForm({
@@ -21,6 +24,8 @@ export default function CheerImageAiForm({
   muscles,
   poses,
   onSubmit,
+  remaining,
+  onChangeRemaining,
 }: Props) {
   const [form, setForm] = useState<{
     cheerTypeId: number | "";
@@ -54,7 +59,7 @@ export default function CheerImageAiForm({
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  // 画像＋他情報でAI掛け声生成
+  // AI生成実行
   const handleGenerate = async () => {
     if (!uploadedUrl) {
       setError("画像をアップロードしてください");
@@ -71,20 +76,24 @@ export default function CheerImageAiForm({
         pose: poses.find((p) => p.id === form.poseId)?.name,
         keyword: form.keyword,
       });
+      // APIのレスポンスに残数含まれる場合のみ更新（なければ親の値を維持）
+      if ("remaining" in res && typeof res.remaining === "number") {
+        onChangeRemaining(res.remaining);
+      }
       if (res.result) setResult(res.result);
       if (res.error) setError(res.error);
     } catch (e: unknown) {
-      if (e instanceof Error) {
-        setError(e.message || "生成に失敗しました");
-      } else {
-        setError("生成に失敗しました");
-      }
+      setError(
+        e instanceof Error
+          ? e.message || "生成に失敗しました"
+          : "生成に失敗しました"
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  // 生成結果を保存
+  // 保存
   const handleSave = async () => {
     if (!result) return;
     await onSubmit({
@@ -101,6 +110,10 @@ export default function CheerImageAiForm({
   return (
     <div className="space-y-4 p-4 border rounded-xl bg-white shadow-md max-w-lg mx-auto">
       <h2 className="text-lg font-bold">画像AIで掛け声生成</h2>
+
+      {/* 残り回数UIを最上部に配置 */}
+      <GenerateCountInfo kind="image_ai" onChangeRemaining={onChangeRemaining} />
+
       <div>
         <label className="block font-semibold">画像ファイル</label>
         <input
@@ -210,10 +223,16 @@ export default function CheerImageAiForm({
       <Button
         type="button"
         onClick={handleGenerate}
-        disabled={loading || uploading || !uploadedUrl}
+        disabled={
+          loading ||
+          uploading ||
+          !uploadedUrl ||
+          typeof remaining !== "number" ||
+          remaining === 0
+        }
         className="mt-2"
       >
-        {loading ? "生成中..." : "画像＋AIで掛け声生成"}
+        {loading ? "生成中..." : "画像+AIで掛け声生成"}
       </Button>
       {result && (
         <div className="mt-4">

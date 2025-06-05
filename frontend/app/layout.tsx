@@ -9,6 +9,7 @@ import {
 } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import "./globals.css";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </SignedIn>
           </header>
           {children}
+          <Toaster richColors closeButton position="top-center" />
         </body>
       </html>
     </ClerkProvider>
