@@ -6,6 +6,8 @@ Rails.application.routes.draw do
         collection do
           post :generate          # /api/v1/cheers/generate
           post :generate_by_image # /api/v1/cheers/generate_by_image
+          post :share_bonus       #/api/v1/cheers/share_bonus
+          get :generate_count     #/api/v1/cheers/generate_count
         end
       end
       resources :cheer_types, only: [:index]

@@ -114,6 +114,27 @@ module Api
       render json: { error: "1日の利用制限を超えました。サービスをシェアして利用回数を追加できます。" }, status: :forbidden
       end
 
+      # POST /api/v1/cheers/share_bonus シェアボーナス付与API
+      def share_bonus
+        #今回のAI生成リクエストがテキストベースなのか画像ベースなのか
+        kind = params[:kind] || "text_ai" # "text_ai" or "image_ai"
+        limit = AiGenerationLimit.for(@current_user, kind)
+        # すでにシェアボーナス加算済みの場合は2回目を弾く
+        if limit.bonus_count >= 1
+          return render json: { error: "本日のシェアボーナスはすでに付与されています" }, status: :forbidden
+        end
+
+        limit.increment_bonus!
+        render json: { message: "AI生成回数が+1回されました", remaining: limit.remaining }
+      end
+
+      # GET /api/v1/cheers/generate_count 現在の生成残数を返すAPIの
+      def generate_count
+        kind = params[:kind] || "text_ai"
+        limit = AiGenerationLimit.for(@current_user, kind)
+        render json: { remaining: limit.remaining, max: limit.max_count, count: limit.count, bonus_count: limit.bonus_count }
+      end
+
       private
 
       def cheer_params
