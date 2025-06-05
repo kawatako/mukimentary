@@ -3,6 +3,9 @@ module Api
   module V1
     class CheersController < ApplicationController
       # 認証ミドルウェアはApplicationControllerでinclude済み
+      
+      #開発中は「回数取得系API」だけ認証スキップ
+      skip_before_action :authenticate_with_jwt!, only: [:generate_count, :share_bonus]
 
       # GET /api/v1/cheers
       def index
@@ -132,7 +135,17 @@ module Api
       def generate_count
         kind = params[:kind] || "text_ai"
         limit = AiGenerationLimit.for(@current_user, kind)
-        render json: { remaining: limit.remaining, max: limit.max_count, count: limit.count, bonus_count: limit.bonus_count }
+
+        # 例: can_shareの定義（1日1回までシェアボーナス）
+        can_share = (limit.bonus_count < 1)
+
+        render json: { 
+          remaining: limit.remaining, 
+          can_share: can_share,
+          max: limit.max_count, 
+          count: limit.count, 
+          bonus_count: limit.bonus_count 
+        }
       end
 
       private

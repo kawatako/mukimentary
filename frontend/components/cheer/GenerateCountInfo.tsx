@@ -1,6 +1,5 @@
 // frontend/components/cheer/GenerateCountInfo.tsx
 //回数表示＆シェアボタンUIコンポーネント
-
 "use client";
 
 import { useEffect, useState } from "react";

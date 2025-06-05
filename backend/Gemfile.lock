@@ -135,6 +135,7 @@ GEM
     drb (2.2.3)
     erb (5.0.1)
     erubi (1.13.1)
+    event_stream_parser (1.0.0)
     factory_bot (6.5.2)
       activesupport (>= 6.1.0)
     factory_bot_rails (6.4.4)
@@ -146,6 +147,8 @@ GEM
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
+    faraday-multipart (1.1.0)
+      multipart-post (~> 2.0)
     faraday-net_http (3.4.0)
       net-http (>= 0.5.0)
     globalid (1.2.1)
@@ -177,6 +180,7 @@ GEM
     mini_mime (1.1.5)
     minitest (5.25.5)
     msgpack (1.8.0)
+    multipart-post (2.4.1)
     mutex_m (0.3.0)
     net-http (0.6.0)
       uri
@@ -315,6 +319,10 @@ GEM
       rubocop (>= 1.72)
       rubocop-performance (>= 1.24)
       rubocop-rails (>= 2.30)
+    ruby-openai (8.1.0)
+      event_stream_parser (>= 0.3.0, < 2.0.0)
+      faraday (>= 1)
+      faraday-multipart (>= 1)
     ruby-progressbar (1.13.0)
     securerandom (0.4.1)
     stringio (3.1.7)
@@ -364,6 +372,7 @@ DEPENDENCIES
   rails (~> 7.1.3)
   rspec-rails
   rubocop-rails-omakase
+  ruby-openai (~> 8.1.0)
   tzinfo-data
 
 BUNDLED WITH
