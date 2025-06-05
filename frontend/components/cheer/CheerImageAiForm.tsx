@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import type { CheerType, Muscle, Pose } from "@/lib/types/prests";
 import type { CheerFormState } from "@/lib/types/cheer";
-import { generateCheerByImage } from "@/lib/api/cheers";
+import { useCheerApi } from "@/lib/hooks/useCheerApi";
 import { useImageUploader } from "@/lib/hooks/useImageUploader";
 import Image from "next/image";
 import { GenerateCountInfo } from "@/components/cheer/GenerateCountInfo";
@@ -41,6 +41,7 @@ export default function CheerImageAiForm({
   const [result, setResult] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { generateCheerByImage } = useCheerApi();
 
   // 画像アップロード用hooks
   const {

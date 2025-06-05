@@ -1,5 +1,4 @@
 // frontend/app/cheers/page.tsx
-import { cookies } from "next/headers";
 import { getCheers, deleteCheer } from "@/lib/server/cheers";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -8,14 +7,11 @@ import type { Cheer } from "@/lib/types/cheer";
 import { redirect } from "next/navigation";
 
 export default async function CheersPage() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("__session")?.value ?? "";
-  const cheers: Cheer[] = await getCheers(token);
+  const cheers: Cheer[] = await getCheers();
 
-  // サーバーアクション：削除
   async function handleDelete(id: number) {
     "use server";
-    await deleteCheer(token, id);
+    await deleteCheer(id);
     redirect("/cheers"); // 削除後は再ロードで一覧更新
   }
 
