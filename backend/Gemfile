@@ -17,6 +17,7 @@ gem "aws-sdk-s3"                 # Amazon S3/LocalStackとの連携
 # ========================
 gem "rack-cors"                  # CORS制御（Next.jsとの連携に必須）
 gem "faraday"                    # HTTPクライアント（OpenAI, Clerk等API呼び出しに）
+gem "ruby-openai", "~> 8.1.0"    # OpenAI APIクライアント
 
 # ========================
 # 🔑 認証・セキュリティ
