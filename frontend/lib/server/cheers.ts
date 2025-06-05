@@ -1,26 +1,23 @@
 // frontend/lib/server/cheers.ts
-// Next.js 15 サーバー専用fetchユーティリティ
 import "server-only";
-import { Cheer,CheerFormState } from "@/lib/types/cheer";
+import { Cheer, CheerFormState } from "@/lib/types/cheer";
+import { fetchWithAuthServer } from "@/lib/server/fetchWithAuthServer";
+import { getBaseUrl } from "@/lib/utils/getBaseUrl";
 
 // 一覧取得（SSR/Server Action用）
-export async function getCheers(token: string): Promise<Cheer[]> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/cheers`, {
-    headers: { Authorization: `Bearer ${token}` },
-    cache: "no-store",
-  });
+export async function getCheers(): Promise<Cheer[]> {
+  const API_BASE = getBaseUrl();
+  const res = await fetchWithAuthServer(`${API_BASE}/api/v1/cheers`);
   if (!res.ok) throw new Error("cheers取得に失敗しました");
   return res.json();
 }
 
 // 作成
-export async function createCheer(token: string, data: CheerFormState) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/cheers`, {
+export async function createCheer(data: CheerFormState) {
+  const API_BASE = getBaseUrl();
+  const res = await fetchWithAuthServer(`${API_BASE}/api/v1/cheers`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       cheer: {
         text: data.text,
@@ -30,7 +27,6 @@ export async function createCheer(token: string, data: CheerFormState) {
         cheer_mode: "manual",
       }
     }),
-    cache: "no-store",
   });
   if (!res.ok) {
     const errorText = await res.text();
@@ -41,23 +37,19 @@ export async function createCheer(token: string, data: CheerFormState) {
 }
 
 // 掛け声1件取得
-export async function getCheerById(token: string, id: number) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/cheers/${id}`, {
-    headers: { Authorization: `Bearer ${token}` },
-    cache: "no-store",
-  });
+export async function getCheerById(id: number) {
+  const API_BASE = getBaseUrl();
+  const res = await fetchWithAuthServer(`${API_BASE}/api/v1/cheers/${id}`);
   if (!res.ok) throw new Error("cheer取得に失敗しました");
   return res.json();
 }
 
-// 更新(更新)
-export async function updateCheer(token: string, id: number, data: CheerFormState) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/cheers/${id}`, {
+// 更新
+export async function updateCheer(id: number, data: CheerFormState) {
+  const API_BASE = getBaseUrl();
+  const res = await fetchWithAuthServer(`${API_BASE}/api/v1/cheers/${id}`, {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       cheer: {
         text: data.text,
@@ -67,7 +59,6 @@ export async function updateCheer(token: string, id: number, data: CheerFormStat
         cheer_mode: "manual", // or data.cheer_mode
       }
     }),
-    cache: "no-store",
   });
   if (!res.ok) {
     const errorText = await res.text();
@@ -77,15 +68,11 @@ export async function updateCheer(token: string, id: number, data: CheerFormStat
   return res.json();
 }
 
-
 // 削除
-export async function deleteCheer(token: string, id: number) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/cheers/${id}`, {
+export async function deleteCheer(id: number) {
+  const API_BASE = getBaseUrl();
+  const res = await fetchWithAuthServer(`${API_BASE}/api/v1/cheers/${id}`, {
     method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    cache: "no-store",
   });
   if (!res.ok) {
     const errorText = await res.text();

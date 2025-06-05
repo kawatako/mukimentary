@@ -4,7 +4,7 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { getAiLimit, postShareBonus } from "@/lib/api/aiLimit";
+import { useCheerApi } from "@/lib/hooks/useCheerApi";
 import { toast } from "sonner";
 
 type Props = {
@@ -24,6 +24,9 @@ export  function GenerateCountInfo({ kind, onChangeRemaining }: Props) {
   const [canShare, setCanShare] = useState(false);
   //API通信中かどうか
   const [loading, setLoading] = useState(false);
+  // APIフック
+  const { getAiLimit, postShareBonus } = useCheerApi();
+
 
 // 生成可能回数取得
 const fetchLimit = async () => {

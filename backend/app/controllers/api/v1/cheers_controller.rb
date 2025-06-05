@@ -4,8 +4,8 @@ module Api
     class CheersController < ApplicationController
       # 認証ミドルウェアはApplicationControllerでinclude済み
       
-      #開発中は「回数取得系API」だけ認証スキップ
-      skip_before_action :authenticate_with_jwt!, only: [:generate_count, :share_bonus]
+      #開発中はclerkの認証スキップする、必ず本番前に消す
+      #skip_before_action :authenticate_with_jwt!
 
       # GET /api/v1/cheers
       def index

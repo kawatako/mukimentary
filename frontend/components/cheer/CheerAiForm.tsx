@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { GenerateCountInfo } from "@/components/cheer/GenerateCountInfo";
 import type { CheerType, Muscle, Pose } from "@/lib/types/prests";
 import type { CheerFormState } from "@/lib/types/cheer";
-import { generateCheer } from "@/lib/api/cheers";
+import { useCheerApi } from "@/lib/hooks/useCheerApi";
 
 type Props = {
   cheerTypes: CheerType[];
@@ -34,6 +34,7 @@ export default function CheerAiForm({
   const [result, setResult] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { generateCheer } = useCheerApi();
 
   const handleChange = <K extends keyof typeof form>(key: K, value: typeof form[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
