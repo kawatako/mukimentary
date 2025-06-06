@@ -4,6 +4,7 @@ import { createCheer } from "@/lib/server/cheers";
 import CheerTabs from "@/components/cheer/CheerTabs";
 import { redirect } from "next/navigation";
 import type { CheerFormState } from "@/lib/types/cheer";
+import { AdBanner } from '@/components/ads/AdBanner'
 
 export default async function CreateCheerPage() {
   const { cheerTypes, muscles, poses } = await getCheerPresets();
@@ -23,6 +24,7 @@ export default async function CreateCheerPage() {
         poses={poses}
         onSubmit={handleSubmit}
       />
+    <AdBanner />
     </div>
   );
 }

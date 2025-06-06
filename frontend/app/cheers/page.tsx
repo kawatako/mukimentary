@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import CheersList from "@/components/cheer/CheersList";
 import type { Cheer } from "@/lib/types/cheer";
 import { redirect } from "next/navigation";
+import { AdBanner } from '@/components/ads/AdBanner'
+
 
 export default async function CheersPage() {
   const { userId } = await auth();
@@ -32,6 +34,7 @@ export default async function CheersPage() {
         </Link>
       </div>
       <CheersList cheers={cheers} onDelete={handleDelete} />
+      <AdBanner />
     </div>
   );
 }
