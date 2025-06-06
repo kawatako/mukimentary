@@ -51,71 +51,86 @@ module Api
 
       # POST /api/v1/cheers/generate
       # 文字入力から掛け声生成
-      def generate
-          # 回数制限チェック
-        limit = AiGenerationLimit.for(@current_user, "text_ai")
-          unless limit.available?
-          message =
-            if limit.bonus_count > 0
-              "1日の利用制限を超えました、また明日お試しください"
-            else
-              "1日の利用制限を超えました。サービスをシェアして利用回数を追加できます。"
-            end
-          return render json: { error: message }, status: :forbidden
-        end
-        # 制限OKならカウントアップ
-        limit.increment_count!
-        # パラメータ検証（空欄は空文字に）
-        %i[cheer_type muscle pose keyword].each do |param|
-          params[param] ||= ""
-        end
-
-        # サービス層でAI生成
-        cheer_text = CheerGeneratorService.generate_from_text(
-          cheer_type: params[:cheer_type],
-          muscle: params[:muscle],
-          pose: params[:pose],
-          keyword: params[:keyword]
-        )
-
-        render json: { result: cheer_text }
-      rescue => e
-      render json: { error: "1日の利用制限を超えました。サービスをシェアして利用回数を追加できます。" }, status: :forbidden
+def generate
+  # 1. 回数制限チェック（ここは今のままでOK）
+  limit = AiGenerationLimit.for(@current_user, "text_ai")
+  unless limit.available?
+    message =
+      if limit.bonus_count > 0
+        "1日の利用制限を超えました、また明日お試しください"
+      else
+        "1日の利用制限を超えました。サービスをシェアして利用回数を追加できます。"
       end
+    return render json: { error: message }, status: :forbidden
+  end
+
+  # 2. パラメータ検証（必要ならここでvalidate）
+  %i[cheer_type muscle pose keyword].each do |param|
+    params[param] ||= ""
+  end
+
+  # 3. サービス層でAI生成（例外補足）
+  cheer_text = nil
+  begin
+    cheer_text = CheerGeneratorService.generate_from_text(
+      cheer_type: params[:cheer_type],
+      muscle: params[:muscle],
+      pose: params[:pose],
+      keyword: params[:keyword]
+    )
+  rescue => e
+    Rails.logger.error("AI生成エラー: #{e.class}: #{e.message}")
+    return render json: { error: "AI生成中にエラーが発生しました" }, status: :internal_server_error
+  end
+
+  # 4. 正常に生成できた場合だけカウントアップ
+  limit.increment_count!
+
+  # 5. 結果を返す
+  render json: { result: cheer_text }
+end
 
       # POST /api/v1/cheers/generate_by_image
       # 画像＋テキスト入力から掛け声生成
-      def generate_by_image
-          # 回数制限チェック
-        limit = AiGenerationLimit.for(@current_user, "image_ai")
-        unless limit.available?
-          message =
-            if limit.bonus_count > 0
-              "1日の利用制限を超えました、また明日お試しください"
-            else
-              "1日の利用制限を超えました。サービスをシェアして利用回数を追加できます。"
-            end
-          return render json: { error: message }, status: :forbidden
-        end
-        limit.increment_count!
-        %i[cheer_type muscle pose keyword].each do |param|
-          params[param] ||= ""
-        end
-        image_url = params[:image_url]
-        return render json: { error: "画像URLがありません" }, status: :unprocessable_entity if image_url.blank?
-
-        cheer_text = CheerGeneratorService.generate_from_image(
-          image_url: image_url,
-          cheer_type: params[:cheer_type],
-          muscle: params[:muscle],
-          pose: params[:pose],
-          keyword: params[:keyword]
-        )
-
-        render json: { result: cheer_text }
-      rescue => e
-      render json: { error: "1日の利用制限を超えました。サービスをシェアして利用回数を追加できます。" }, status: :forbidden
+def generate_by_image
+  # --- 残数チェックだけは先に ---
+  limit = AiGenerationLimit.for(@current_user, "image_ai")
+  unless limit.available?
+    message =
+      if limit.bonus_count > 0
+        "1日の利用制限を超えました、また明日お試しください"
+      else
+        "1日の利用制限を超えました。サービスをシェアして利用回数を追加できます。"
       end
+    return render json: { error: message }, status: :forbidden
+  end
+
+  # --- パラメータチェックはここで ---
+  %i[cheer_type muscle pose keyword].each { |param| params[param] ||= "" }
+  image_url = params[:image_url]
+  if image_url.blank?
+    return render json: { error: "画像URLがありません" }, status: :unprocessable_entity
+  end
+
+  # --- AI生成本体（ここで失敗した場合も回数は減らない）---
+  begin
+    cheer_text = CheerGeneratorService.generate_from_image(
+      image_url: image_url,
+      cheer_type: params[:cheer_type],
+      muscle: params[:muscle],
+      pose: params[:pose],
+      keyword: params[:keyword]
+    )
+  rescue => e
+    Rails.logger.error("AI生成エラー: #{e.message}")
+    return render json: { error: "AI生成中にエラーが発生しました" }, status: :internal_server_error
+  end
+
+  # --- ここでだけ利用回数増やす ---
+  limit.increment_count!
+
+  render json: { result: cheer_text }
+end
 
       # POST /api/v1/cheers/share_bonus シェアボーナス付与API
       def share_bonus
