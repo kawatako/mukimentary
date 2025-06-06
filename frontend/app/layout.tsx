@@ -10,6 +10,7 @@ import {
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "sonner";
+import Script from 'next/script'
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,6 +21,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <ClerkProvider>
       <html lang="ja">
+        <head>
+          <Script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+            strategy="afterInteractive"
+            crossOrigin="anonymous"
+          />
+        </head>
         <body>
           <header>
             <SignedOut>
