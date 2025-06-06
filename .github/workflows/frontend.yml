@@ -26,26 +26,49 @@ jobs:
         with:
           node-version: 20
 
-      # ③ 依存パッケージをインストール（npm ci: package-lock.jsonと同期）
+      # ③ 依存パッケージをインストール
       - name: Install dependencies
         run: npm ci
+        env:
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          NEXT_PUBLIC_BACKEND_URL: ${{ secrets.NEXT_PUBLIC_BACKEND_URL }}
 
       # ④ Lint（ESLint）を実行
       - name: Lint
         run: npm run lint
+        env:
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          NEXT_PUBLIC_BACKEND_URL: ${{ secrets.NEXT_PUBLIC_BACKEND_URL }}
 
       # ⑤ TypeScriptの型チェック
       - name: Type check
         run: npm run typecheck
+        env:
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          NEXT_PUBLIC_BACKEND_URL: ${{ secrets.NEXT_PUBLIC_BACKEND_URL }}
 
       # ⑥ Next.jsのビルド
       - name: Build
         run: npm run build
+        env:
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          NEXT_PUBLIC_BACKEND_URL: ${{ secrets.NEXT_PUBLIC_BACKEND_URL }}
 
-      # ⑦（後から追加できるポイント）Jestテスト導入後、下のコメントアウトを外すだけ！
+      # ⑦ テストなどは必要に応じて後から追記可能
       # - name: Run Jest tests
       #   run: npm test -- --ci
+      #   env:
+      #     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+      #     CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+      #     NEXT_PUBLIC_BACKEND_URL: ${{ secrets.NEXT_PUBLIC_BACKEND_URL }}
 
-      # ⑧（後から追加できるポイント）E2Eテスト導入時はここに追加
       # - name: Run Playwright tests
       #   run: npx playwright test
+      #   env:
+      #     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+      #     CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+      #     NEXT_PUBLIC_BACKEND_URL: ${{ secrets.NEXT_PUBLIC_BACKEND_URL }}
