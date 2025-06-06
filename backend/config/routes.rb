@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       resources :cheer_types, only: [:index]
       resources :muscles, only: [:index]
       resources :poses, only: [:index]
+      post "uploads/presign", to: "uploads#presign" #/api/v1/uploads/presignへのPOSTリクエストをApi::V1::UploadsControllerのpresignアクションにルーティング
     end
   end
 end
