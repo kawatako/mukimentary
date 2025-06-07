@@ -19,8 +19,5 @@ COPY . .
 # ポート3000を開ける
 EXPOSE 3000
 
-# エントリポイント(一旦コメントアウト)
-# ENTRYPOINT ["bin/docker-entrypoint"]
-
-# デフォルトコマンド
-CMD ["rails", "server", "-b", "0.0.0.0"]
+# RAILS_ENV=production のときだけマイグレーションを実行し、常にサーバー起動
+CMD ["sh", "-c", "if [ \"$RAILS_ENV\" = \"production\" ]; then bundle exec rails db:migrate; fi && rails server -b 0.0.0.0"]
