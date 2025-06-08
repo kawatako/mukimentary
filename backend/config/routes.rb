@@ -1,5 +1,7 @@
 # backend/config/routes.rb
 Rails.application.routes.draw do
+  #「本番環境でAPIだけを動かしている場合によくある」Railsのルーティングエラーの回避
+  root to: proc { [200, {}, ['Mukimentary API running']] }
   namespace :api do
     namespace :v1 do
       resources :cheers, only: [:index, :show, :create, :update, :destroy] do
