@@ -1,13 +1,18 @@
 // frontend/app/profile/[username]/page.tsx
+
 import { notFound } from "next/navigation";
 
-type Props = {
+export async function generateStaticParams() {
+  return []; // 現時点では静的に生成する username はない
+}
+
+type PageProps = {
   params: {
     username: string;
   };
 };
 
-export default function UserProfilePage({ params }: Props) {
+export default function UserProfilePage({ params }: PageProps) {
   const { username } = params;
 
   if (!username) {
