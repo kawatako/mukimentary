@@ -1,10 +1,7 @@
-// frontend/app/profile/[username]/page.tsx
-
+// app/profile/[username]/page.tsx
 import { notFound } from "next/navigation";
 
-export async function generateStaticParams() {
-  return []; // 現時点では静的に生成する username はない
-}
+export const dynamic = "force-dynamic";
 
 type PageProps = {
   params: {
@@ -12,12 +9,18 @@ type PageProps = {
   };
 };
 
-export default function UserProfilePage({ params }: PageProps) {
+export default async function UserProfilePage({ params }: PageProps) {
   const { username } = params;
 
-  if (!username) {
+  // バリデーション（空や不正な場合）
+  if (!username || typeof username !== "string") {
     notFound();
   }
+
+  // 必要に応じてRails APIからユーザー存在チェック（例）
+  // const res = await fetch(`${process.env.API_BASE_URL}/api/v1/users/${username}`, { cache: "no-store" });
+  // if (!res.ok) notFound();
+  // const user = await res.json();
 
   return (
     <div className="max-w-xl mx-auto py-12 px-4">
