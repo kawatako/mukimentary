@@ -1,20 +1,14 @@
 // frontend/app/profile/[username]/page.tsx
 
 import { notFound } from "next/navigation";
-import { Metadata } from "next";
+
+export async function generateStaticParams() {
+  return []; // 現時点では静的に生成する username はない
+}
 
 type PageProps = {
   params: {
     username: string;
-  };
-};
-
-// 任意：SEO向けメタデータ
-export const generateMetadata = async ({
-  params,
-}: PageProps): Promise<Metadata> => {
-  return {
-    title: `${params.username} のプロフィール`,
   };
 };
 
