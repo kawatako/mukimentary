@@ -38,7 +38,8 @@ module JwtAuthenticatable
     unless @current_user
       @current_user = User.create!(
         clerk_user_id: payload['sub'],
-        name: payload['name'] # Clerkのカスタムクレームを使う場合
+        name: payload['name'], # Clerkのカスタムクレームを使う場合
+        username: payload['username'].presence || "user_#{SecureRandom.hex(4)}"
       )
     end
     # @current_userがセットされてAPI本体へ
