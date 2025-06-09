@@ -47,11 +47,11 @@ module Api
 
         # --- S3クライアントを初期化（LocalStack/本番どちらにも対応）---
         s3 = Aws::S3::Resource.new(
-          endpoint: ENV["S3_ENDPOINT"], # LocalStackの場合はローカルエンドポイント
-          region: "ap-northeast-1",
+          region: ENV["AWS_REGION"],
           access_key_id: ENV["AWS_ACCESS_KEY_ID"],
           secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"],
-          force_path_style: true
+          endpoint: ENV["S3_ENDPOINT"].presence, # LocalStack のみ
+          force_path_style: ENV["S3_ENDPOINT"].present?
         )
 
         # --- PUT（アップロード）用の署名付きURLを生成（10分間有効）---
