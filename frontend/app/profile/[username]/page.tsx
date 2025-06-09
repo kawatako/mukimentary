@@ -1,13 +1,24 @@
 // frontend/app/profile/[username]/page.tsx
-import { notFound } from "next/navigation";
 
-type Props = {
+import { notFound } from "next/navigation";
+import { Metadata } from "next";
+
+type PageProps = {
   params: {
     username: string;
   };
 };
 
-export default function UserProfilePage({ params }: Props) {
+// 任意：SEO向けメタデータ
+export const generateMetadata = async ({
+  params,
+}: PageProps): Promise<Metadata> => {
+  return {
+    title: `${params.username} のプロフィール`,
+  };
+};
+
+export default function UserProfilePage({ params }: PageProps) {
   const { username } = params;
 
   if (!username) {
