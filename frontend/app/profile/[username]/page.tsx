@@ -4,10 +4,11 @@ import { notFound } from "next/navigation";
 // ✅ 動的ルーティングを明示的に許可
 export const dynamicParams = true;
 
+// Next.js 15対応: paramsをPromiseにする
 type Props = {
-  params: {
+  params: Promise<{
     username: string;
-  };
+  }>;
 };
 
 // ✅ 必ず async にして RSC に準拠
