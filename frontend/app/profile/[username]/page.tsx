@@ -1,12 +1,18 @@
 // app/profile/[username]/page.tsx
 import { notFound } from "next/navigation";
 
-export default async function UserProfilePage({
-  params,
-}: {
-  params: { username: string };
-}) {
-  const { username } = params;
+// ✅ 動的ルーティングを明示的に許可
+export const dynamicParams = true;
+
+type Props = {
+  params: {
+    username: string;
+  };
+};
+
+// ✅ 必ず async にして RSC に準拠
+export default async function UserProfilePage({ params }: Props) {
+  const { username } = await params;
 
   if (!username) {
     notFound();
