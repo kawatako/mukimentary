@@ -1,5 +1,6 @@
 // frontend/app/layout.tsx
 import { ClerkProvider } from "@clerk/nextjs";
+import { clerkAppearance } from "@/lib/clerk/appearance";
 import { jaJP } from "@clerk/localizations";
 import type { Metadata } from "next";
 import "./globals.css";
@@ -7,7 +8,6 @@ import { Toaster } from "sonner";
 import Script from "next/script";
 import SideNav from "@/components/layout/SideNav";
 import BottomNav from "@/components/layout/BottomNav";
-import { FloatingCreateButton } from "@/components/cheer/FloatingCreateButton";
 import AppHeader from "@/components/layout/AppHeader";
 
 export const metadata: Metadata = {
@@ -25,6 +25,7 @@ export default function RootLayout({
       localization={jaJP}
       signInUrl='/sign-in'
       signUpUrl='/sign-up'
+      appearance={clerkAppearance}
     >
       <html lang='ja'>
         <head>
@@ -48,7 +49,6 @@ export default function RootLayout({
             </div>
           </div>
           <BottomNav />
-          <FloatingCreateButton />
           <Toaster richColors closeButton position='top-center' />
         </body>
       </html>
