@@ -49,29 +49,33 @@ export default function CheerManualForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 p-4 border rounded-xl bg-white shadow-md max-w-lg mx-auto"
+      className="bg-card border border-border rounded-xl shadow-sm p-5 max-w-lg mx-auto space-y-5"
     >
-      <h2 className="text-lg font-bold">手動で掛け声を作成</h2>
-      <div>
-        <label className="block font-semibold">掛け声テキスト（20字以内）</label>
+      <h2 className="text-xl font-bold text-center text-foreground">手動で掛け声を作成</h2>
+
+      {/* 掛け声テキスト */}
+      <div className="space-y-1">
+        <label className="text-sm font-medium text-muted-foreground">
+          掛け声テキスト（20字以内）
+        </label>
         <input
           type="text"
           value={form.text}
           maxLength={20}
           onChange={(e) => handleChange("text", e.target.value)}
-          className="border rounded px-2 py-1 w-full"
+          className="w-full rounded-lg border border-input bg-white px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           placeholder="例：その背中、翼のようだ！"
           required
         />
       </div>
-      <div>
-        <label className="block font-semibold">タイプ</label>
+
+      {/* タイプ */}
+      <div className="space-y-1">
+        <label className="text-sm font-medium text-muted-foreground">タイプ</label>
         <select
           value={form.cheerTypeId}
-          onChange={(e) =>
-            handleChange("cheerTypeId", e.target.value === "" ? "" : Number(e.target.value))
-          }
-          className="border rounded px-2 py-1 w-full"
+          onChange={(e) => handleChange("cheerTypeId", e.target.value === "" ? "" : Number(e.target.value))}
+          className="w-full rounded-lg border border-input bg-white px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           required
         >
           <option value="">選択してください</option>
@@ -82,14 +86,14 @@ export default function CheerManualForm({
           ))}
         </select>
       </div>
-      <div>
-        <label className="block font-semibold">筋肉部位</label>
+
+      {/* 筋肉 */}
+      <div className="space-y-1">
+        <label className="text-sm font-medium text-muted-foreground">筋肉部位</label>
         <select
           value={form.muscleId}
-          onChange={(e) =>
-            handleChange("muscleId", e.target.value === "" ? "" : Number(e.target.value))
-          }
-          className="border rounded px-2 py-1 w-full"
+          onChange={(e) => handleChange("muscleId", e.target.value === "" ? "" : Number(e.target.value))}
+          className="w-full rounded-lg border border-input bg-white px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           required
         >
           <option value="">選択してください</option>
@@ -100,14 +104,14 @@ export default function CheerManualForm({
           ))}
         </select>
       </div>
-      <div>
-        <label className="block font-semibold">ポーズ</label>
+
+      {/* ポーズ */}
+      <div className="space-y-1">
+        <label className="text-sm font-medium text-muted-foreground">ポーズ</label>
         <select
           value={form.poseId}
-          onChange={(e) =>
-            handleChange("poseId", e.target.value === "" ? "" : Number(e.target.value))
-          }
-          className="border rounded px-2 py-1 w-full"
+          onChange={(e) => handleChange("poseId", e.target.value === "" ? "" : Number(e.target.value))}
+          className="w-full rounded-lg border border-input bg-white px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           required
         >
           <option value="">選択してください</option>
@@ -118,8 +122,12 @@ export default function CheerManualForm({
           ))}
         </select>
       </div>
-      {error && <div className="text-red-600">{error}</div>}
-      <Button type="submit" className="mt-2">
+
+      {/* エラー表示 */}
+      {error && <div className="text-sm text-red-600">{error}</div>}
+
+      {/* 保存ボタン */}
+      <Button type="submit" className="w-full rounded-xl text-base py-2">
         保存
       </Button>
     </form>

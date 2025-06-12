@@ -62,23 +62,28 @@ const fetchLimit = async () => {
   };
 
   return (
-    <div className="flex items-center gap-3 mt-2">
-      <span>
-        残りAI生成回数:{" "}
-        <span className={remaining === 0 ? "text-red-600 font-bold" : "font-bold"}>
-          {remaining ?? "-"}
+    <div className="flex flex-col sm:flex-row sm:justify-center sm:items-center gap-2 sm:gap-8 w-full px-4">
+      <div className="flex justify-center sm:justify-end sm:w-1/2">
+        <span className="text-sm text-muted-foreground">
+          残りAI生成回数: {" "}
+          <span className={
+            remaining === 0 ? "text-red-600 font-bold" : "text-primary font-bold"
+          }>
+            {remaining ?? "-"}
+          </span>
         </span>
-      </span>
+      </div>
       {canShare && (
-        <Button
-          onClick={handleShare}
-          disabled={loading}
-          size="sm"
-          className="ml-2"
-          variant="outline"
-        >
-          {loading ? "付与中..." : "シェアで+1回"}
-        </Button>
+        <div className="flex justify-center sm:justify-start sm:w-1/2">
+          <Button
+            onClick={handleShare}
+            disabled={loading}
+            size="sm"
+            variant="outline"
+          >
+            {loading ? "付与中..." : "シェアで+1回"}
+          </Button>
+        </div>
       )}
     </div>
   );

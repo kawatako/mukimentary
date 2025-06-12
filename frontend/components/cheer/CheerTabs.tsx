@@ -24,11 +24,27 @@ export default function CheerTabs({ cheerTypes, muscles, poses, onSubmit }: Prop
 
   return (
     <Tabs defaultValue="manual" className="w-full">
-      <TabsList>
-        <TabsTrigger value="manual">Manual</TabsTrigger>
-        <TabsTrigger value="ai">AI</TabsTrigger>
-        <TabsTrigger value="image_ai">画像AI</TabsTrigger>
+      <TabsList className="w-full max-w-lg mx-auto flex justify-between bg-accent/10 border border-border rounded-xl px-2 py-1 gap-2 shadow-sm">
+        <TabsTrigger
+          value="manual"
+          className="flex-1 text-center data-[state=active]:bg-card data-[state=active]:text-foreground rounded-lg px-4 py-1 text-sm font-semibold"
+        >
+          Manual
+        </TabsTrigger>
+        <TabsTrigger
+          value="ai"
+          className="flex-1 text-center data-[state=active]:bg-card data-[state=active]:text-foreground rounded-lg px-4 py-1 text-sm font-semibold"
+        >
+          AI
+        </TabsTrigger>
+        <TabsTrigger
+          value="image_ai"
+          className="flex-1 text-center data-[state=active]:bg-card data-[state=active]:text-foreground rounded-lg px-4 py-1 text-sm font-semibold"
+        >
+          画像AI
+        </TabsTrigger>
       </TabsList>
+
       <TabsContent value="manual">
         <CheerManualForm cheerTypes={cheerTypes} muscles={muscles} poses={poses} onSubmit={onSubmit} />
       </TabsContent>

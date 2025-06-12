@@ -25,12 +25,13 @@ export default function CheerAiForm({
   remaining,
   onChangeRemaining,
 }: Props) {
-  const [form, setForm] = useState<{ cheerTypeId: number | ""; muscleId: number | ""; poseId: number | ""; keyword?: string; }>({
+  const [form, setForm] = useState<{ cheerTypeId: number | ""; muscleId: number | ""; poseId: number | ""; keyword?: string }>({
     cheerTypeId: "",
     muscleId: "",
     poseId: "",
     keyword: "",
   });
+
   const [result, setResult] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -54,11 +55,7 @@ export default function CheerAiForm({
       if (res.result) setResult(res.result);
       if (res.error) setError(res.error);
     } catch (e: unknown) {
-      if (e instanceof Error) {
-        setError(e.message || "生成に失敗しました");
-      } else {
-        setError("生成に失敗しました");
-      }
+      setError(e instanceof Error ? e.message || "生成に失敗しました" : "生成に失敗しました");
     } finally {
       setLoading(false);
     }
@@ -77,19 +74,18 @@ export default function CheerAiForm({
   };
 
   return (
-    <div className="space-y-4 p-4 border rounded-xl bg-white shadow-md max-w-lg mx-auto">
-      <h2 className="text-xl font-bold">AIで掛け声生成</h2>
-      {/* 残り回数をコールバックで受け取る */}
+    <div className="bg-card border border-border rounded-xl shadow-sm p-5 max-w-lg mx-auto space-y-5">
+      <h2 className="text-xl font-bold text-center text-foreground">AIで掛け声生成</h2>
+
       <GenerateCountInfo kind="text_ai" onChangeRemaining={onChangeRemaining} />
 
-      <div>
-        <label className="block font-semibold">タイプ</label>
+      {/* タイプ */}
+      <div className="space-y-1">
+        <label className="text-sm font-medium text-muted-foreground">タイプ</label>
         <select
           value={form.cheerTypeId}
-          onChange={(e) =>
-            handleChange("cheerTypeId", e.target.value === "" ? "" : Number(e.target.value))
-          }
-          className="border rounded px-2 py-1 w-full"
+          onChange={(e) => handleChange("cheerTypeId", e.target.value === "" ? "" : Number(e.target.value))}
+          className="w-full rounded-lg border border-input bg-white px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring"
           required
         >
           <option value="">選択してください</option>
@@ -100,14 +96,14 @@ export default function CheerAiForm({
           ))}
         </select>
       </div>
-      <div>
-        <label className="block font-semibold">筋肉部位</label>
+
+      {/* 筋肉部位 */}
+      <div className="space-y-1">
+        <label className="text-sm font-medium text-muted-foreground">筋肉部位</label>
         <select
           value={form.muscleId}
-          onChange={(e) =>
-            handleChange("muscleId", e.target.value === "" ? "" : Number(e.target.value))
-          }
-          className="border rounded px-2 py-1 w-full"
+          onChange={(e) => handleChange("muscleId", e.target.value === "" ? "" : Number(e.target.value))}
+          className="w-full rounded-lg border border-input bg-white px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring"
           required
         >
           <option value="">選択してください</option>
@@ -118,14 +114,14 @@ export default function CheerAiForm({
           ))}
         </select>
       </div>
-      <div>
-        <label className="block font-semibold">ポーズ</label>
+
+      {/* ポーズ */}
+      <div className="space-y-1">
+        <label className="text-sm font-medium text-muted-foreground">ポーズ</label>
         <select
           value={form.poseId}
-          onChange={(e) =>
-            handleChange("poseId", e.target.value === "" ? "" : Number(e.target.value))
-          }
-          className="border rounded px-2 py-1 w-full"
+          onChange={(e) => handleChange("poseId", e.target.value === "" ? "" : Number(e.target.value))}
+          className="w-full rounded-lg border border-input bg-white px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring"
           required
         >
           <option value="">選択してください</option>
@@ -136,41 +132,47 @@ export default function CheerAiForm({
           ))}
         </select>
       </div>
-      <div>
-        <label className="block font-semibold">フリーワード（任意）</label>
+
+      {/* キーワード */}
+      <div className="space-y-1">
+        <label className="text-sm font-medium text-muted-foreground">フリーワード（任意）</label>
         <input
           type="text"
           value={form.keyword}
           onChange={(e) => handleChange("keyword", e.target.value)}
-          className="border rounded px-2 py-1 w-full"
+          className="w-full rounded-lg border border-input bg-white px-3 py-2 text-sm placeholder:text-muted-foreground"
           placeholder="例：流行語・アニメ名 など"
         />
       </div>
 
+      {/* 生成ボタン */}
       <Button
         type="button"
         onClick={handleGenerate}
         disabled={loading || typeof remaining !== "number" || remaining === 0}
-        className="mt-2"
+        className="w-full rounded-xl text-base py-2"
       >
         {loading ? "生成中..." : "AIで掛け声生成"}
       </Button>
 
+      {/* 結果 */}
       {result && (
-        <div className="mt-4">
-          <label className="block font-semibold mb-1">生成結果（編集可）</label>
+        <div className="space-y-1 mt-4">
+          <label className="text-sm font-medium text-muted-foreground">生成結果（編集可）</label>
           <textarea
-            className="border rounded px-2 py-1 w-full"
+            className="w-full rounded-lg border border-input bg-white px-3 py-2 text-sm resize-none"
             rows={2}
             value={result}
             onChange={(e) => setResult(e.target.value)}
           />
-          <Button type="button" onClick={handleSave} className="mt-2">
+          <Button type="button" onClick={handleSave} className="w-full rounded-xl text-base py-2 mt-2">
             この内容で保存
           </Button>
         </div>
       )}
-      {error && <div className="text-red-600 mt-2">{error}</div>}
+
+      {/* エラー */}
+      {error && <div className="text-sm text-red-600">{error}</div>}
     </div>
   );
 }
