@@ -1,5 +1,6 @@
 // frontend/app/layout.tsx
 import { ClerkProvider } from "@clerk/nextjs";
+import { jaJP } from "@clerk/localizations";
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "sonner";
@@ -14,25 +15,33 @@ export const metadata: Metadata = {
   description: "筋肉と掛け声のSNS",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <ClerkProvider>
-      <html lang="ja">
+    <ClerkProvider
+      localization={jaJP}
+      signInUrl='/sign-in'
+      signUpUrl='/sign-up'
+    >
+      <html lang='ja'>
         <head>
           <Script
             async
-            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
-            strategy="afterInteractive"
-            crossOrigin="anonymous"
+            src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
+            strategy='afterInteractive'
+            crossOrigin='anonymous'
           />
         </head>
         <body>
-          <div className="flex w-full justify-center">
-            <div className="flex w-full max-w-screen-md min-h-screen gap-0">
-              <aside className="hidden md:block w-52 shrink-0">
+          <div className='flex w-full justify-center'>
+            <div className='flex w-full max-w-screen-md min-h-screen gap-0'>
+              <aside className='hidden md:block w-52 shrink-0'>
                 <SideNav />
               </aside>
-              <main className="flex-1">
+              <main className='flex-1'>
                 <AppHeader />
                 {children}
               </main>
@@ -40,7 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
           <BottomNav />
           <FloatingCreateButton />
-          <Toaster richColors closeButton position="top-center" />
+          <Toaster richColors closeButton position='top-center' />
         </body>
       </html>
     </ClerkProvider>
