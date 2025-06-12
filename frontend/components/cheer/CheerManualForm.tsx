@@ -1,4 +1,5 @@
 //frontend/components/cheer/CheerManualForm.tsx
+//frontend/components/cheer/CheerManualForm.tsx
 "use client";
 
 import { useState } from "react";
@@ -14,7 +15,6 @@ type Props = {
 };
 
 export default function CheerManualForm({
-  cheerTypes,
   muscles,
   poses,
   onSubmit,
@@ -34,14 +34,12 @@ export default function CheerManualForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.text || form.text.length > 20) {
-      setError("掛け声テキストは1〜20字で入力してください");
+
+    if (!form.text || form.text.length > 50) {
+      setError("掛け声テキストは1〜50字で入力してください");
       return;
     }
-    if (!form.cheerTypeId || !form.muscleId || !form.poseId) {
-      setError("すべての項目を選択してください");
-      return;
-    }
+
     setError(null);
     await onSubmit(form);
   };
@@ -56,45 +54,26 @@ export default function CheerManualForm({
       {/* 掛け声テキスト */}
       <div className="space-y-1">
         <label className="text-sm font-medium text-muted-foreground">
-          掛け声テキスト（20字以内）
+          掛け声テキスト
         </label>
         <input
           type="text"
           value={form.text}
-          maxLength={20}
+          maxLength={50}
           onChange={(e) => handleChange("text", e.target.value)}
           className="w-full rounded-lg border border-input bg-white px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          placeholder="例：その背中、翼のようだ！"
+          placeholder="例：背中にでっかいジープ乗せてんのかい!!"
           required
         />
       </div>
 
-      {/* タイプ */}
+      {/* 筋肉（任意） */}
       <div className="space-y-1">
-        <label className="text-sm font-medium text-muted-foreground">タイプ</label>
-        <select
-          value={form.cheerTypeId}
-          onChange={(e) => handleChange("cheerTypeId", e.target.value === "" ? "" : Number(e.target.value))}
-          className="w-full rounded-lg border border-input bg-white px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          required
-        >
-          <option value="">選択してください</option>
-          {cheerTypes.map((type) => (
-            <option key={type.id} value={type.id}>
-              {type.name}（{type.description}）
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* 筋肉 */}
-      <div className="space-y-1">
-        <label className="text-sm font-medium text-muted-foreground">筋肉部位</label>
+        <label className="text-sm font-medium text-muted-foreground">筋肉部位（任意）</label>
         <select
           value={form.muscleId}
           onChange={(e) => handleChange("muscleId", e.target.value === "" ? "" : Number(e.target.value))}
           className="w-full rounded-lg border border-input bg-white px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          required
         >
           <option value="">選択してください</option>
           {muscles.map((muscle) => (
@@ -105,14 +84,13 @@ export default function CheerManualForm({
         </select>
       </div>
 
-      {/* ポーズ */}
+      {/* ポーズ（任意） */}
       <div className="space-y-1">
-        <label className="text-sm font-medium text-muted-foreground">ポーズ</label>
+        <label className="text-sm font-medium text-muted-foreground">ポーズ（任意）</label>
         <select
           value={form.poseId}
           onChange={(e) => handleChange("poseId", e.target.value === "" ? "" : Number(e.target.value))}
           className="w-full rounded-lg border border-input bg-white px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          required
         >
           <option value="">選択してください</option>
           {poses.map((pose) => (
