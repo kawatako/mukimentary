@@ -1,4 +1,4 @@
-// frontend/components/cheer/CheerImageAiForm.tsx
+//frontend/components/cheer/CheerImageAiForm.tsx
 "use client";
 
 import { useState } from "react";
@@ -15,8 +15,8 @@ type Props = {
   muscles: Muscle[];
   poses: Pose[];
   onSubmit: (form: CheerFormState) => void | Promise<void>;
-  remaining: number | null; // 親管理の残り回数
-  onChangeRemaining: (value: number | null) => void; // 親への残数通知
+  remaining: number | null;
+  onChangeRemaining: (value: number | null) => void;
 };
 
 export default function CheerImageAiForm({
@@ -27,23 +27,18 @@ export default function CheerImageAiForm({
   remaining,
   onChangeRemaining,
 }: Props) {
-  const [form, setForm] = useState<{
-    cheerTypeId: number | "";
-    muscleId: number | "";
-    poseId: number | "";
-    keyword?: string;
-  }>({
+  const [form, setForm] = useState({
     cheerTypeId: "",
     muscleId: "",
     poseId: "",
     keyword: "",
   });
+
   const [result, setResult] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { generateCheerByImage } = useCheerApi();
 
-  // 画像アップロード用hooks
   const {
     uploading,
     uploadedUrl,
@@ -53,14 +48,10 @@ export default function CheerImageAiForm({
     reset,
   } = useImageUploader();
 
-  const handleChange = <K extends keyof typeof form>(
-    key: K,
-    value: (typeof form)[K]
-  ) => {
+  const handleChange = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  // AI生成実行
   const handleGenerate = async () => {
     if (!uploadedUrl) {
       setError("画像をアップロードしてください");
@@ -72,51 +63,49 @@ export default function CheerImageAiForm({
     try {
       const res = await generateCheerByImage({
         image_url: uploadedUrl,
-        cheer_type: cheerTypes.find((t) => t.id === form.cheerTypeId)?.name,
-        muscle: muscles.find((m) => m.id === form.muscleId)?.name,
-        pose: poses.find((p) => p.id === form.poseId)?.name,
+        cheer_type: cheerTypes.find((t) => t.id === Number(form.cheerTypeId))?.name,
+        muscle: muscles.find((m) => m.id === Number(form.muscleId))?.name,
+        pose: poses.find((p) => p.id === Number(form.poseId))?.name,
         keyword: form.keyword,
       });
-      // APIのレスポンスに残数含まれる場合のみ更新（なければ親の値を維持）
       if ("remaining" in res && typeof res.remaining === "number") {
         onChangeRemaining(res.remaining);
       }
       if (res.result) setResult(res.result);
       if (res.error) setError(res.error);
-    } catch (e: unknown) {
-      setError(
-        e instanceof Error
-          ? e.message || "生成に失敗しました"
-          : "生成に失敗しました"
-      );
-    } finally {
+} catch (e: unknown) {
+  if (e instanceof Error) {
+    setError(e.message || "生成に失敗しました");
+  } else {
+    setError("生成に失敗しました");
+  }
+} finally {
       setLoading(false);
     }
   };
 
-  // 保存
   const handleSave = async () => {
     if (!result) return;
     await onSubmit({
       text: result,
-      cheerTypeId: form.cheerTypeId,
-      muscleId: form.muscleId,
-      poseId: form.poseId,
+      cheerTypeId: Number(form.cheerTypeId),
+      muscleId: Number(form.muscleId),
+      poseId: Number(form.poseId),
+      keyword: form.keyword,
       imageUrl: uploadedUrl,
-      keyword: form.keyword || "",
       cheerMode: "image_ai",
     });
   };
 
   return (
-    <div className="space-y-4 p-4 border rounded-xl bg-white shadow-md max-w-lg mx-auto">
-      <h2 className="text-lg font-bold">画像AIで掛け声生成</h2>
+    <div className="bg-card border border-border rounded-xl shadow-sm p-5 max-w-lg mx-auto space-y-5">
+      <h2 className="text-xl font-bold text-center text-foreground">画像AIで掛け声生成</h2>
 
-      {/* 残り回数UIを最上部に配置 */}
       <GenerateCountInfo kind="image_ai" onChangeRemaining={onChangeRemaining} />
 
-      <div>
-        <label className="block font-semibold">画像ファイル</label>
+      {/* 画像アップロード */}
+      <div className="space-y-1">
+        <label className="text-sm font-medium text-muted-foreground">画像ファイル</label>
         <input
           type="file"
           accept="image/*"
@@ -124,103 +113,57 @@ export default function CheerImageAiForm({
           disabled={uploading}
         />
         {previewUrl && (
-          <div className="mt-2">
+          <div className="mt-2 space-y-2">
             <Image
               src={previewUrl}
               alt="画像プレビュー"
-              className="rounded"
+              className="rounded-xl border max-h-40 object-contain mx-auto"
               width={320}
               height={240}
-              style={{ objectFit: "contain", maxHeight: "160px" }}
             />
-            <Button
-              type="button"
-              onClick={reset}
-              className="ml-2"
-              variant="outline"
-              size="sm"
-            >
-              画像を変更
-            </Button>
+            <div className="flex justify-center">
+              <Button type="button" onClick={reset} variant="outline" size="sm" className="rounded-lg">
+                画像を変更
+              </Button>
+            </div>
           </div>
         )}
-        {uploadError && (
-          <div className="text-red-600 mt-2">{uploadError}</div>
-        )}
+        {uploadError && <div className="text-sm text-red-600">{uploadError}</div>}
       </div>
-      <div>
-        <label className="block font-semibold">タイプ</label>
-        <select
-          value={form.cheerTypeId}
-          onChange={(e) =>
-            handleChange(
-              "cheerTypeId",
-              e.target.value === "" ? "" : Number(e.target.value)
-            )
-          }
-          className="border rounded px-2 py-1 w-full"
-          required
-        >
-          <option value="">選択してください</option>
-          {cheerTypes.map((type) => (
-            <option key={type.id} value={type.id}>
-              {type.name}（{type.description}）
-            </option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <label className="block font-semibold">筋肉部位</label>
-        <select
-          value={form.muscleId}
-          onChange={(e) =>
-            handleChange(
-              "muscleId",
-              e.target.value === "" ? "" : Number(e.target.value)
-            )
-          }
-          className="border rounded px-2 py-1 w-full"
-          required
-        >
-          <option value="">選択してください</option>
-          {muscles.map((muscle) => (
-            <option key={muscle.id} value={muscle.id}>
-              {muscle.name}（{muscle.description}）
-            </option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <label className="block font-semibold">ポーズ</label>
-        <select
-          value={form.poseId}
-          onChange={(e) =>
-            handleChange(
-              "poseId",
-              e.target.value === "" ? "" : Number(e.target.value)
-            )
-          }
-          className="border rounded px-2 py-1 w-full"
-          required
-        >
-          <option value="">選択してください</option>
-          {poses.map((pose) => (
-            <option key={pose.id} value={pose.id}>
-              {pose.name}（{pose.description}）
-            </option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <label className="block font-semibold">フリーワード（任意）</label>
+
+      {/* 選択フィールド */}
+      {[{ key: "cheerTypeId", label: "タイプ", options: cheerTypes }, { key: "muscleId", label: "筋肉部位", options: muscles }, { key: "poseId", label: "ポーズ", options: poses }].map(({ key, label, options }) => (
+        <div key={key} className="space-y-1">
+          <label className="text-sm font-medium text-muted-foreground">{label}</label>
+          <select
+            value={form[key as keyof typeof form]}
+            onChange={(e) => handleChange(key as keyof typeof form, e.target.value)}
+            className="w-full rounded-lg border border-input bg-white px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring"
+            required
+          >
+            <option value="">選択してください</option>
+            {options.map((opt) => (
+              <option key={opt.id} value={opt.id}>
+                {opt.name}（{opt.description}）
+              </option>
+            ))}
+          </select>
+        </div>
+      ))}
+
+      {/* フリーワード */}
+      <div className="space-y-1">
+        <label className="text-sm font-medium text-muted-foreground">フリーワード（任意）</label>
         <input
           type="text"
           value={form.keyword}
           onChange={(e) => handleChange("keyword", e.target.value)}
-          className="border rounded px-2 py-1 w-full"
+          className="w-full rounded-lg border border-input bg-white px-3 py-2 text-sm placeholder:text-muted-foreground"
           placeholder="例：流行語・アニメ名 など"
         />
       </div>
+
+      {/* 生成ボタン */}
       <Button
         type="button"
         onClick={handleGenerate}
@@ -231,25 +174,28 @@ export default function CheerImageAiForm({
           typeof remaining !== "number" ||
           remaining === 0
         }
-        className="mt-2"
+        className="w-full rounded-xl text-base py-2"
       >
         {loading ? "生成中..." : "画像+AIで掛け声生成"}
       </Button>
+
+      {/* 結果表示 */}
       {result && (
-        <div className="mt-4">
-          <label className="block font-semibold mb-1">生成結果（編集可）</label>
+        <div className="space-y-1">
+          <label className="text-sm font-medium text-muted-foreground">生成結果（編集可）</label>
           <textarea
-            className="border rounded px-2 py-1 w-full"
+            className="w-full rounded-lg border border-input bg-white px-3 py-2 text-sm resize-none"
             rows={2}
             value={result}
             onChange={(e) => setResult(e.target.value)}
           />
-          <Button type="button" onClick={handleSave} className="mt-2">
+          <Button type="button" onClick={handleSave} className="w-full rounded-xl text-base py-2 mt-2">
             この内容で保存
           </Button>
         </div>
       )}
-      {error && <div className="text-red-600 mt-2">{error}</div>}
+
+      {error && <div className="text-sm text-red-600">{error}</div>}
     </div>
   );
 }

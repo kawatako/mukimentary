@@ -1,4 +1,4 @@
-//frontend/components/layout/BottomNav.tsx
+// frontend/components/layout/BottomNav.tsx
 "use client";
 
 import { Home, Dumbbell, BookOpen, User } from "lucide-react";
@@ -16,13 +16,10 @@ export default function BottomNav() {
   const pathname = usePathname();
   const { user } = useUser();
 
-  // プロフィールリンク（ログインしていればユーザーネームを使用）
-  const profileHref = user?.username
-    ? `/profile/${user.username}`
-    : "/profile"; // fallback
+  const profileHref = user?.username ? `/profile/${user.username}` : "/profile";
 
   return (
-    <nav className="fixed bottom-0 left-0 w-full h-14 bg-white border-t border-gray-200 flex justify-around items-center md:hidden z-40">
+    <nav className="fixed bottom-0 left-0 w-full h-14 bg-[hsl(var(--background))] border-t border-[hsl(var(--card-border))] flex justify-around items-center md:hidden z-40 text-[hsl(var(--foreground))]">
       {navItems.map(({ href, icon: Icon, label }) => {
         const isActive = pathname.startsWith(href);
         return (
@@ -30,8 +27,8 @@ export default function BottomNav() {
             key={href}
             href={href}
             className={`flex flex-col items-center text-xs ${
-              isActive ? "text-primary font-semibold" : "text-muted-foreground"
-            }`}
+              isActive ? "text-[hsl(var(--accent))] font-semibold" : "text-subtext"
+            } hover:text-[hsl(var(--accent))] transition-colors`}
           >
             <Icon className="w-5 h-5 mb-0.5" />
             {label}
@@ -42,8 +39,10 @@ export default function BottomNav() {
       <Link
         href={profileHref}
         className={`flex flex-col items-center text-xs ${
-          pathname.startsWith("/profile") ? "text-primary font-semibold" : "text-muted-foreground"
-        }`}
+          pathname.startsWith("/profile")
+            ? "text-[hsl(var(--accent))] font-semibold"
+            : "text-subtext"
+        } hover:text-[hsl(var(--accent))] transition-colors`}
       >
         <User className="w-5 h-5 mb-0.5" />
         プロフ

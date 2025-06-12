@@ -19,7 +19,7 @@ export type Cheer = {
   pose?: { id: number; name: string; description?: string };
 };
 
-// 保存用フォーム状態（既存を少し整理）
+// 保存用フォーム状態
 export type CheerFormState = {
   text: string;
   cheerTypeId: number | "";  // 型名一貫性のため camelCase

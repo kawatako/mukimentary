@@ -1,3 +1,4 @@
+//fronend/app/cheers/page.tsx
 import { getCheers, deleteCheer } from "@/lib/server/cheers";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
@@ -26,7 +27,7 @@ export default async function CheersPage() {
 
   return (
     <div className="max-w-xl mx-auto px-4 py-8 pb-28 relative">
-      <h1 className="text-2xl font-bold mb-4">マイ掛け声ライブラリ</h1>
+      <h1 className="text-xl font-bold text-foreground mb-6 text-center">マイ掛け声ライブラリ</h1>
 
       {userId ? (
         <CheersList cheers={cheers} onDelete={handleDelete} />
@@ -34,7 +35,7 @@ export default async function CheersPage() {
         <div className="text-center text-muted-foreground mt-10 space-y-4">
           <p>掛け声を作成・保存するにはログインが必要です。</p>
           <Link href="/sign-in">
-            <Button variant="default">ログインして始める</Button>
+            <Button variant="default" className="rounded-xl px-5 py-2 text-base">ログインして始める</Button>
           </Link>
         </div>
       )}

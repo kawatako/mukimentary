@@ -17,7 +17,7 @@ export default async function CreateCheerPage() {
 
   return (
     <div className="max-w-xl mx-auto py-8">
-      <h2 className="text-xl font-bold mb-4">掛け声を作成</h2>
+      <h2 className="text-xl font-bold text-center text-foreground mb-6">掛け声を作成</h2>
       <CheerTabs
         cheerTypes={cheerTypes}
         muscles={muscles}
