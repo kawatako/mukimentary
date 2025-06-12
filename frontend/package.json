@@ -12,6 +12,7 @@
   "dependencies": {
     "@clerk/clerk-react": "^5.31.8",
     "@clerk/clerk-sdk-node": "^4.13.23",
+    "@clerk/localizations": "^3.16.4",
     "@clerk/nextjs": "^6.21.0",
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-tabs": "^1.1.12",
