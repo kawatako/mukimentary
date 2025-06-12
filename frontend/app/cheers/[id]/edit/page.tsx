@@ -6,8 +6,13 @@ import EditCheerForm from "@/components/cheer/EditCheerForm";
 import { updateCheer } from "@/lib/server/cheers";
 import type { CheerFormState } from "@/lib/types/cheer";
 
-export default async function EditCheerPage({ params }: { params: { id: string } }) {
-  const cheerId = Number(params.id);
+export default async function EditCheerPage({ 
+  params 
+}: { 
+  params: Promise<{ id: string }> 
+}) {
+  const { id } = await params;
+  const cheerId = Number(id);
   const cheer = await getCheerById(cheerId);
   const { cheerTypes, muscles, poses } = await getCheerPresets();
 
