@@ -75,13 +75,13 @@ export default function CheerAiForm({
 
   return (
     <div className="bg-card border border-border rounded-xl shadow-sm p-5 max-w-lg mx-auto space-y-5">
-      <h2 className="text-xl font-bold text-center text-foreground">AIで掛け声生成</h2>
+      <h2 className="text-xl font-bold text-center text-foreground">キーワードからAIで掛け声を生成</h2>
 
       <GenerateCountInfo kind="text_ai" onChangeRemaining={onChangeRemaining} />
 
       {/* タイプ */}
       <div className="space-y-1">
-        <label className="text-sm font-medium text-muted-foreground">タイプ</label>
+        <label className="text-sm font-medium text-muted-foreground">タイプ(任意)</label>
         <select
           value={form.cheerTypeId}
           onChange={(e) => handleChange("cheerTypeId", e.target.value === "" ? "" : Number(e.target.value))}
@@ -99,7 +99,7 @@ export default function CheerAiForm({
 
       {/* 筋肉部位 */}
       <div className="space-y-1">
-        <label className="text-sm font-medium text-muted-foreground">筋肉部位</label>
+        <label className="text-sm font-medium text-muted-foreground">筋肉部位(任意)</label>
         <select
           value={form.muscleId}
           onChange={(e) => handleChange("muscleId", e.target.value === "" ? "" : Number(e.target.value))}
@@ -117,7 +117,7 @@ export default function CheerAiForm({
 
       {/* ポーズ */}
       <div className="space-y-1">
-        <label className="text-sm font-medium text-muted-foreground">ポーズ</label>
+        <label className="text-sm font-medium text-muted-foreground">ポーズ(任意)</label>
         <select
           value={form.poseId}
           onChange={(e) => handleChange("poseId", e.target.value === "" ? "" : Number(e.target.value))}
@@ -135,13 +135,14 @@ export default function CheerAiForm({
 
       {/* キーワード */}
       <div className="space-y-1">
-        <label className="text-sm font-medium text-muted-foreground">フリーワード（任意）</label>
+        <label className="text-sm font-medium text-muted-foreground">フリーワード(任意)</label>
         <input
           type="text"
+          maxLength={50}
           value={form.keyword}
           onChange={(e) => handleChange("keyword", e.target.value)}
           className="w-full rounded-lg border border-input bg-white px-3 py-2 text-sm placeholder:text-muted-foreground"
-          placeholder="例：流行語・アニメ名 など"
+          placeholder="例：流行語・アニメ名 など(50文字以内)"
         />
       </div>
 

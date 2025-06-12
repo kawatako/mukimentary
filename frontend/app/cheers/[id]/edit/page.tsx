@@ -14,7 +14,7 @@ export default async function EditCheerPage({
   const { id } = await params;
   const cheerId = Number(id);
   const cheer = await getCheerById(cheerId);
-  const { cheerTypes, muscles, poses } = await getCheerPresets();
+  const { muscles, poses } = await getCheerPresets();
 
   if (!cheer) return notFound();
 
@@ -28,15 +28,15 @@ export default async function EditCheerPage({
       <h1 className="text-xl font-bold mb-4">掛け声の編集</h1>
       <EditCheerForm
         cheerId={cheer.id}
-        cheerTypes={cheerTypes}
         muscles={muscles}
         poses={poses}
         initialForm={{
           text: cheer.text,
-          cheerTypeId: cheer.cheer_type_id,
-          muscleId: cheer.muscle_id,
-          poseId: cheer.pose_id,
+          cheerTypeId: cheer.cheer_type_id || null,
+          muscleId: cheer.muscle_id || null,
+          poseId: cheer.pose_id || null,
           cheerMode: cheer.cheer_mode,
+          imageUrl: cheer.image_url || null,
         }}
         onSubmit={handleSubmit}
       />

@@ -55,33 +55,28 @@ const fetchLimit = async () => {
       toast.success("AI生成回数が+1回されました!");
       fetchLimit();
     } catch {
-      toast.error("シェアボーナス付与に失敗しました");
+      toast.error("シェアボーナス付与に失敗しました、しばらく経ってからお試しください");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col sm:flex-row sm:justify-center sm:items-center gap-2 sm:gap-8 w-full px-4">
-      <div className="flex justify-center sm:justify-end sm:w-1/2">
-        <span className="text-sm text-muted-foreground">
-          残りAI生成回数: {" "}
-          <span className={
-            remaining === 0 ? "text-red-600 font-bold" : "text-primary font-bold"
-          }>
-            {remaining ?? "-"}
-          </span>
-        </span>
+    <div className="flex flex-col gap-3 w-full text-sm px-2 text-foreground">
+      <div className="text-center">
+        今日の残りAI生成回数: <span className="font-bold">{remaining ?? "-"}</span>
       </div>
+
       {canShare && (
-        <div className="flex justify-center sm:justify-start sm:w-1/2">
+        <div className="text-center">
           <Button
             onClick={handleShare}
             disabled={loading}
             size="sm"
-            variant="outline"
+            variant="ghost"
+            className="text-sm text-primary hover:text-primary/80 underline"
           >
-            {loading ? "付与中..." : "シェアで+1回"}
+            📣 {loading ? "付与中..." : "シェアして1日の利用回数を増やす"}
           </Button>
         </div>
       )}
