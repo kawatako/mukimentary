@@ -19,8 +19,6 @@ services:
     command: bash -c "rm -f tmp/pids/server.pid && bundle install && rails db:migrate && rails s -b 0.0.0.0"
     volumes:
       - ./backend:/app
-    env_file:
-      - ./backend/.env
     ports:
       - "3000:3000"
     depends_on:
@@ -32,14 +30,15 @@ services:
       context: ./frontend
     command: bash -c "npm install && npm run dev"
     volumes:
-    - ./frontend:/app 
+      - ./frontend:/app
     ports:
       - "4000:3000"
     depends_on:
       - backend
 
   localstack:
-    image: localstack/localstack:latest
+    build:
+      context: ./docker/localstack
     environment:
       - SERVICES=s3
       - DEBUG=1
@@ -47,5 +46,4 @@ services:
     ports:
       - "4566:4566"
     volumes:
-      - ./docker/localstack:/docker-entrypoint-initaws.d
       - /var/run/docker.sock:/var/run/docker.sock
