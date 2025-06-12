@@ -19,7 +19,15 @@ export default function BottomNav() {
   const profileHref = user?.username ? `/profile/${user.username}` : "/profile";
 
   return (
-    <nav className="fixed bottom-0 left-0 w-full h-14 bg-[hsl(var(--background))] border-t border-[hsl(var(--card-border))] flex justify-around items-center md:hidden z-40 text-[hsl(var(--foreground))]">
+    <nav
+      className='fixed bottom-0 left-0 w-full h-14
+  bg-primary text-white
+  border-t border-[hsl(var(--card-border))]
+  shadow-[0_-2px_6px_rgba(0,0,0,0.1)]
+  flex justify-around items-center
+  md:hidden z-40'
+    >
+      {" "}
       {navItems.map(({ href, icon: Icon, label }) => {
         const isActive = pathname.startsWith(href);
         return (
@@ -27,15 +35,16 @@ export default function BottomNav() {
             key={href}
             href={href}
             className={`flex flex-col items-center text-xs ${
-              isActive ? "text-[hsl(var(--accent))] font-semibold" : "text-subtext"
+              isActive
+                ? "text-[hsl(var(--accent))] font-semibold"
+                : "text-subtext"
             } hover:text-[hsl(var(--accent))] transition-colors`}
           >
-            <Icon className="w-5 h-5 mb-0.5" />
+            <Icon className='w-5 h-5 mb-0.5' />
             {label}
           </Link>
         );
       })}
-
       <Link
         href={profileHref}
         className={`flex flex-col items-center text-xs ${
@@ -44,7 +53,7 @@ export default function BottomNav() {
             : "text-subtext"
         } hover:text-[hsl(var(--accent))] transition-colors`}
       >
-        <User className="w-5 h-5 mb-0.5" />
+        <User className='w-5 h-5 mb-0.5' />
         プロフ
       </Link>
     </nav>
