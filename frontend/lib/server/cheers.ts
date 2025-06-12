@@ -21,10 +21,11 @@ export async function createCheer(data: CheerFormState) {
     body: JSON.stringify({
       cheer: {
         text: data.text,
-        cheer_type_id: data.cheerTypeId,
-        muscle_id: data.muscleId,
-        pose_id: data.poseId,
-        cheer_mode: "manual",
+        cheer_type_id: data.cheerTypeId || null,
+        muscle_id: data.muscleId || null,
+        pose_id: data.poseId || null,
+        cheer_mode: data.cheerMode,
+        image_url: data.imageUrl || null, 
       }
     }),
   });
@@ -53,10 +54,9 @@ export async function updateCheer(id: number, data: CheerFormState) {
     body: JSON.stringify({
       cheer: {
         text: data.text,
-        cheer_type_id: data.cheerTypeId,
         muscle_id: data.muscleId,
         pose_id: data.poseId,
-        cheer_mode: "manual", // or data.cheer_mode
+        image_url: data.imageUrl,        
       }
     }),
   });

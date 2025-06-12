@@ -5,6 +5,7 @@ import { getCheerPresets } from "@/lib/server/cheerPresets";
 import EditCheerForm from "@/components/cheer/EditCheerForm";
 import { updateCheer } from "@/lib/server/cheers";
 import type { CheerFormState } from "@/lib/types/cheer";
+import { redirect } from "next/navigation";
 
 export default async function EditCheerPage({ 
   params 
@@ -21,6 +22,7 @@ export default async function EditCheerPage({
   async function handleSubmit(form: CheerFormState) {
     "use server";
     await updateCheer(cheerId, form);
+    redirect("/cheers");
   }
 
   return (
