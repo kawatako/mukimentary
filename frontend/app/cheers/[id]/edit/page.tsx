@@ -6,13 +6,7 @@ import EditCheerForm from "@/components/cheer/EditCheerForm";
 import { updateCheer } from "@/lib/server/cheers";
 import type { CheerFormState } from "@/lib/types/cheer";
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
-
-export default async function EditCheerPage({ params }: Props) {
+export default async function EditCheerPage({ params }: { params: { id: string } }) {
   const cheerId = Number(params.id);
   const cheer = await getCheerById(cheerId);
   const { cheerTypes, muscles, poses } = await getCheerPresets();
@@ -37,7 +31,7 @@ export default async function EditCheerPage({ params }: Props) {
           cheerTypeId: cheer.cheer_type_id,
           muscleId: cheer.muscle_id,
           poseId: cheer.pose_id,
-          cheerMode: cheer.cheer_mode
+          cheerMode: cheer.cheer_mode,
         }}
         onSubmit={handleSubmit}
       />
