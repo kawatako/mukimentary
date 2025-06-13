@@ -38,27 +38,32 @@ module Api
         bucket_name = ENV.fetch("S3_BUCKET")
         region = ENV.fetch("AWS_REGION")
 
-        # --- S3 PresignerによるPUT用署名付きURL生成 ---
+        # --- 拡張子に応じてMIMEタイプを正規化 ---
+        mime_type = case ext
+                    when "jpg", "jpeg" then "image/jpeg"
+                    when "png" then "image/png"
+                    when "webp" then "image/webp"
+                    else "application/octet-stream"
+                    end
+
+        # --- Presignerを使った署名付きURLの生成 ---
         presigner = Aws::S3::Presigner.new(
           region: region,
           access_key_id: ENV["AWS_ACCESS_KEY_ID"],
-          secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"],
-          endpoint: ENV["S3_ENDPOINT"].presence, # LocalStackなど
-          force_path_style: ENV["S3_ENDPOINT"].present?
+          secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"]
         )
 
-        upload_url = presigner.presigned_url(
-          :put_object,
+        upload_url = presigner.presigned_url(:put_object,
           bucket: bucket_name,
           key: object_key,
-          content_type: "image/#{ext}",
-          expires_in: 600
+          expires_in: 600,
+          content_type: mime_type
         )
 
-        # --- 公開URL（誰でもアクセス可能） ---
+        # --- 公開URLを構築 ---
         public_url = "https://#{bucket_name}.s3.#{region}.amazonaws.com/#{object_key}"
 
-        # --- LocalStack用にホスト名を変換（開発環境対応） ---
+        # --- LocalStack用ホスト書き換え（開発環境対応） ---
         if ENV["S3_ENDPOINT"].present?
           upload_url = upload_url.gsub("localstack:4566", "localhost:4566")
           public_url = public_url.gsub("localstack:4566", "localhost:4566")
