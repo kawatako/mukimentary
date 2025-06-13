@@ -47,11 +47,11 @@ export default function RootLayout({
               <main className='flex-1'>
                 <AppHeader />
                 {children}
+                <Footer />
               </main>
             </div>
           </div>
           <BottomNav />
-          <Footer />
           <Toaster richColors closeButton position='top-center' />
         </body>
       </html>
