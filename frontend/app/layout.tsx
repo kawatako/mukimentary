@@ -30,12 +30,12 @@ export default function RootLayout({
     >
       <html lang='ja'>
         <head>
-          <Script
-            async
-            src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
-            strategy='afterInteractive'
-            crossOrigin='anonymous'
-          />
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9614537995335790"
+          strategy="afterInteractive"
+          crossOrigin="anonymous"
+        />
         </head>
         <body>
           <div className='flex w-full justify-center'>
