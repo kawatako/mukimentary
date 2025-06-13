@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import type { Muscle, Pose } from "@/lib/types/prests";
 import type { CheerFormState } from "@/lib/types/cheer";
-import Image from "next/image";
 import { useImageUploader } from "@/lib/hooks/useImageUploader";
 
 type Props = {
@@ -121,43 +120,44 @@ export default function EditCheerForm({
       <div className="space-y-2">
         <label className="text-sm font-semibold block">画像（任意）</label>
 
-        {/* 現在の画像プレビュー */}
-        {form.imageUrl && !previewUrl && (
-          <div className="mb-2">
-            <Image
-              src={form.imageUrl}
-              alt="現在の画像"
-              width={320}
-              height={240}
-              className="rounded-xl border max-h-40 object-contain mx-auto"
-            />
-          </div>
-        )}
+{/* 現在の画像プレビュー */}
+{form.imageUrl && !previewUrl && (
+  <div className="mb-2">
+    {/* eslint-disable-next-line @next/next/no-img-element */}
+    <img
+      src={form.imageUrl}
+      alt="現在の画像"
+      className="rounded-xl border max-h-40 object-contain mx-auto"
+      width={320}
+      height={240}
+    />
+  </div>
+)}
 
-        {/* 新しいプレビュー */}
-        {previewUrl && (
-          <div className="mb-2">
-            <Image
-              src={previewUrl}
-              alt="プレビュー画像"
-              width={320}
-              height={240}
-              className="rounded-xl border max-h-40 object-contain mx-auto"
-            />
-            <div className="flex justify-center mt-2">
-              <Button
-                type="button"
-                onClick={reset}
-                variant="outline"
-                size="sm"
-                className="rounded-lg"
-              >
-                画像を変更
-              </Button>
-            </div>
-          </div>
-        )}
-
+{/* 新しいプレビュー */}
+{previewUrl && (
+  <div className="mb-2">
+    {/* eslint-disable-next-line @next/next/no-img-element */}
+    <img
+      src={previewUrl}
+      alt="プレビュー画像"
+      className="rounded-xl border max-h-40 object-contain mx-auto"
+      width={320}
+      height={240}
+    />
+    <div className="flex justify-center mt-2">
+      <Button
+        type="button"
+        onClick={reset}
+        variant="outline"
+        size="sm"
+        className="rounded-lg"
+      >
+        画像を変更
+      </Button>
+    </div>
+  </div>
+)}
         {/* アップロードボタン */}
         <label className="block w-full cursor-pointer rounded-xl border border-dashed border-input bg-white px-4 py-3 text-center text-sm text-muted-foreground hover:bg-gray-50 transition">
           画像を選択
