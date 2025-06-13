@@ -47,7 +47,6 @@ module Api
           key: object_key,
           expires_in: 600,
           content_type: "image/#{ext}",
-          acl: "public-read"
         )
 
         # --- 公開URLを構築 ---
@@ -60,8 +59,8 @@ module Api
         end
 
         render json: {
-          upload_url: upload_url,
-          public_url: public_url
+          upload_url: upload_url,#S3へのPUT用署名付きURL（内部向け・10分有効）
+          public_url: public_url  #誰でもアクセスできる公開画像URL（例：img srcに使える）
         }
       end
     end
