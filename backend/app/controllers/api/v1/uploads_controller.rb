@@ -57,7 +57,7 @@ module Api
         # --- PUT（アップロード）用の署名付きURLを生成（10分間有効）---
         bucket_name = ENV.fetch("S3_BUCKET")
         obj = s3.bucket(bucket_name).object(object_key)
-        presigned_url = obj.presigned_url(:put, expires_in: 600, acl: "private",content_type: "image/#{ext}")
+        presigned_url = obj.presigned_url(:put, expires_in: 600, "public-read",content_type: "image/#{ext}")
 
         # --- プライベートバケット用：GET（プレビュー/表示）も署名付きURLで取得する想定 ---
         get_url = obj.presigned_url(:get, expires_in: 600)
