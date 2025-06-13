@@ -57,22 +57,20 @@ module Api
         # --- PUT（アップロード）用の署名付きURLを生成（10分間有効）---
         bucket_name = ENV.fetch("S3_BUCKET")
         obj = s3.bucket(bucket_name).object(object_key)
-        presigned_url = obj.presigned_url(:put, expires_in: 600, acl: "private",content_type: "image/#{ext}")
+        presigned_url = obj.presigned_url(:put, expires_in: 600, acl: "public-read", content_type: "image/#{ext}")
 
-        # --- プライベートバケット用：GET（プレビュー/表示）も署名付きURLで取得する想定 ---
-        get_url = obj.presigned_url(:get, expires_in: 600)
+        # --- 公開URLを生成（署名付きでなく通常URL）---
+        public_url = obj.public_url
 
-        # --- LocalStack用ホスト名書き換え ---
+        # --- LocalStack用ホスト名書き換え（開発環境） ---
         if ENV["S3_ENDPOINT"].present? && presigned_url.include?("localstack:4566")
-          # Dockerネットワーク内だけのhost名→外部アクセス用に変換
           upload_url = presigned_url.gsub("localstack:4566", "localhost:4566")
-          public_url = get_url.gsub("localstack:4566", "localhost:4566")
+          public_url = public_url.gsub("localstack:4566", "localhost:4566")
         else
           upload_url = presigned_url
-          public_url = get_url
         end
 
-        # --- フロントへPUT/GET用URLを返却 ---
+        # --- フロントへ返却 ---
         render json: { upload_url: upload_url, public_url: public_url }
       end
     end
