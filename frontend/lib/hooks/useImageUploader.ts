@@ -26,31 +26,28 @@ const { fetchWithAuth } = useAuthFetch();
 //APIのベースURLを取得
 const API_BASE = getBaseUrl();
 
-const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  const file = e.target.files?.[0];
-  if (!file) return;
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  // --- 拡張子バリデーション ---
-  const allowedExts = ["jpg", "jpeg", "png", "webp"];
-  const ext = file.name.split(".").pop()?.toLowerCase();
-  if (!ext || !allowedExts.includes(ext)) {
-    setError("対応画像形式（JPG, JPEG, PNG, WEBP）のみアップロードできます");
-    return;
-  }
+    const allowedExts = ["jpg", "jpeg", "png", "webp"];
+    const ext = file.name.split(".").pop()?.toLowerCase();
+    if (!ext || !allowedExts.includes(ext)) {
+      setError("対応画像形式（JPG, JPEG, PNG, WEBP）のみアップロードできます");
+      return;
+    }
 
-  // --- サイズバリデーション（5MB） ---
-  const maxSize = 5 * 1024 * 1024; // 5MB
-  if (file.size > maxSize) {
-    setError("5MB以下の画像のみアップロードできます");
-    return;
-  }
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      setError("5MB以下の画像のみアップロードできます");
+      return;
+    }
 
-  setPreviewUrl(URL.createObjectURL(file));
-  setUploading(true);
-  setError(null);
+    setPreviewUrl(URL.createObjectURL(file));
+    setUploading(true);
+    setError(null);
 
     try {
-      // 絶対パスでAPI呼び出し
       const res = await fetchWithAuth(`${API_BASE}/api/v1/uploads/presign`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -60,39 +57,45 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         }),
       });
 
-      // 失敗時はエラーメッセージ取得
       if (!res.ok) {
         let errorMsg = "署名付きURLの取得に失敗しました";
         try {
           const data = await res.json();
           if (data && data.error) errorMsg = data.error;
-        } catch { /* ignore */ }
+        } catch {}
         setError(errorMsg);
         setUploading(false);
         return;
       }
 
-      // 成功時
       const { upload_url, public_url } = await res.json();
 
+      // MIMEタイプ補正マップ
+      const mimeMap: Record<string, string> = {
+        jpg: "image/jpeg",
+        jpeg: "image/jpeg",
+        png: "image/png",
+        webp: "image/webp",
+      };
+      const fallbackType = ext && mimeMap[ext] ? mimeMap[ext] : "application/octet-stream";
+      const contentType = file.type || fallbackType;
 
-    // S3に直接PUT
-    const uploadRes = await fetch(upload_url, {
-      method: "PUT",
-      headers: { "Content-Type": file.type},
-      body: file,
-    });
-    if (!uploadRes.ok) throw new Error("S3へのアップロードに失敗しました");
+      const uploadRes = await fetch(upload_url, {
+        method: "PUT",
+        headers: { "Content-Type": contentType },
+        body: file,
+      });
+      if (!uploadRes.ok) throw new Error("S3へのアップロードに失敗しました");
 
-    setUploadedUrl(public_url);
-  } catch (err: unknown) {
-    setError(
-      err instanceof Error ? err.message : "アップロードに失敗しました"
-    );
-  } finally {
-    setUploading(false);
-  }
-};
+      setUploadedUrl(public_url);
+    } catch (err: unknown) {
+      setError(
+        err instanceof Error ? err.message : "アップロードに失敗しました"
+      );
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const reset = () => {
     setUploadedUrl(null);
