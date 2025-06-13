@@ -1,16 +1,20 @@
 // lib/server/fetchWithAuthServer.ts
-// サーバー側（auth()でJWT取得してfetchに載せる）
-import { cookies } from "next/headers";
+// サーバーサイド用の共通fetchラッパー（JWT自動付与）
+// この関数は、Clerkの認証セッションから安全にJWT（アクセストークン）を取得し、
+// APIリクエストに Authorization ヘッダーとして自動で付与
+// fetchのたびに手動でトークンを取得・設定する手間を省き、すべてのAPI通信において認証が統一的かつ安全に行えるようになります。
+import { auth } from "@clerk/nextjs/server";
 
 export async function fetchWithAuthServer(input: RequestInfo, init?: RequestInit) {
-  //Next.js 15のnext/headersからcookies()を呼び出し、リクエストに紐づいたCookieストアを取得。
-  const cookieStore = await cookies();
-  //__session というキーのCookie（＝Clerkなどの認証サービスがセットしたJWTトークン）を取得。
-  const token = cookieStore.get("__session")?.value ?? ""; // Clerkなど
-  //fetchの第1引数にはAPIのURLを、第2引数にはオプション（methodやbodyなど）を受け取る。
-  //ヘッダーには**Authorization: Bearer <token>** を自動でセット（他のヘッダーもマージ）。
-  //cache: "no-store" でキャッシュ無効（APIの最新データを取得）。
-  //認証付きのAPIリクエストが毎回この関数で共通化できる。
+  // Clerkが現在のセッション情報をオブジェクトで取得（ユーザーがログインしている場合のみ）
+  const session = await auth();
+  // セッションに紐づく最新のJWT（アクセストークン=getToken）を取得
+  // ※トークンが期限切れの場合はClerkが自動で再発行してくれる
+  const token = await session.getToken();
+  // 認証付きのAPIリクエストを実行
+  // - Authorizationヘッダーに Bearer <token> をセット
+  // - その他のinitヘッダーとマージ
+  // - cache: "no-store" でサーバー側のレスポンスキャッシュを無効化
   return fetch(input, {
     ...init,
     headers: {

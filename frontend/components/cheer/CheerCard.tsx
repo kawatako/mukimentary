@@ -1,7 +1,6 @@
 //frontend/components/cheer/CheerCard.tsx
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Share2 } from "lucide-react";
@@ -32,11 +31,11 @@ export function CheerCard({ cheer, onDelete }: Props) {
       {/* 画像 */}
       {cheer.image_url && (
         <div className='w-full aspect-[4/3] relative rounded-md overflow-hidden border'>
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src={cheer.image_url}
             alt='掛け声画像'
-            fill
-            className='object-contain'
+            className='w-full h-full object-contain absolute inset-0'
           />
         </div>
       )}
