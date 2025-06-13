@@ -79,7 +79,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     // S3に直接PUT
     const uploadRes = await fetch(upload_url, {
       method: "PUT",
-      headers: { "Content-Type": file.type },
+      headers: { "Content-Type": file.type, "x-amz-acl": "public-read" },
       body: file,
     });
     if (!uploadRes.ok) throw new Error("S3へのアップロードに失敗しました");
