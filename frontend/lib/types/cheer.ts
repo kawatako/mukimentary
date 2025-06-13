@@ -19,6 +19,12 @@ export type Cheer = {
   pose?: { id: number; name: string; description?: string };
 };
 
+//ページネーション付き取得用の戻り値
+export type PaginatedCheers = {
+  cheers: Cheer[];
+  totalPages: number;
+};
+
 // 保存用フォーム状態
 export type CheerFormState = {
   text: string;

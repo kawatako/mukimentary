@@ -3,14 +3,43 @@ module Api
   module V1
     class CheersController < ApplicationController
       # 認証ミドルウェアはApplicationControllerでinclude済み
-      
-      #開発中はclerkの認証スキップする、必ず本番前に消す
-      #skip_before_action :authenticate_with_jwt!
 
       # GET /api/v1/cheers
       def index
-        cheers = @current_user.cheers.order(created_at: :desc)
-        render json: cheers.as_json(include: [:cheer_type, :muscle, :pose])
+        # --- パラメータ取得 ---
+        page = params[:page].to_i > 0 ? params[:page].to_i : 1
+        per_page = 20
+
+        # 複数ID指定のため配列化（params[:pose] は "1,2" などのカンマ区切りで来る想定）
+        pose_ids = (params[:pose]&.split(",") || []).map(&:to_i)
+        muscle_ids = (params[:muscle]&.split(",") || []).map(&:to_i)
+
+        # --- 絞り込み条件を構築 ---
+        cheers_scope = @current_user.cheers
+
+        if pose_ids.present?
+          cheers_scope = cheers_scope.where(pose_id: pose_ids)
+        end
+
+        if muscle_ids.present?
+          cheers_scope = cheers_scope.where(muscle_id: muscle_ids)
+        end
+
+        # --- 総件数を事前にカウントしてページ数を計算 ---
+        total_count = cheers_scope.count
+        total_pages = (total_count / per_page.to_f).ceil
+
+        # --- 並び順・ページング ---
+        cheers = cheers_scope
+                    .order(created_at: :desc)
+                    .offset((page - 1) * per_page)
+                    .limit(per_page)
+
+        # --- JSONで返す ---
+        render json: {
+          cheers: cheers.as_json(include: [:cheer_type, :muscle, :pose]),
+          total_pages: total_pages
+        }
       end
 
       # GET /api/v1/cheers/:id

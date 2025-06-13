@@ -1,16 +1,37 @@
 // frontend/lib/server/cheers.ts
 import "server-only";
-import { Cheer, CheerFormState } from "@/lib/types/cheer";
+import { PaginatedCheers, CheerFormState } from "@/lib/types/cheer";
 import { fetchWithAuthServer } from "@/lib/server/fetchWithAuthServer";
 import { getBaseUrl } from "@/lib/utils/getBaseUrl";
 
 // 一覧取得（SSR/Server Action用）
-export async function getCheers(): Promise<Cheer[]> {
+export async function getCheers({
+  page = 1,
+  poseIds = [],
+  muscleIds = [],
+}: {
+  page?: number;
+  poseIds?: number[];
+  muscleIds?: number[];
+}): Promise<PaginatedCheers> {
   const API_BASE = getBaseUrl();
-  const res = await fetchWithAuthServer(`${API_BASE}/api/v1/cheers`);
+  const params = new URLSearchParams();
+  params.set("page", String(page));
+
+  if (poseIds.length > 0) {
+    params.set("pose", poseIds.join(","));
+  }
+  if (muscleIds.length > 0) {
+    params.set("muscle", muscleIds.join(","));
+  }
+
+  const res = await fetchWithAuthServer(`${API_BASE}/api/v1/cheers?${params.toString()}`);
+
   if (!res.ok) throw new Error("cheers取得に失敗しました");
-  return res.json();
+
+  return res.json(); // { cheers: Cheer[], totalPages: number }
 }
+
 
 // 作成
 export async function createCheer(data: CheerFormState) {
