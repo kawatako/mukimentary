@@ -51,7 +51,7 @@ export default function CheersFilter({ muscles, poses }: Props) {
 
   return (
     <form onSubmit={handleSubmit} className="mb-6 space-y-4">
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap justify-center gap-4">
         <MultiSelectPopover
           label="部位で絞り込む"
           options={muscles}
