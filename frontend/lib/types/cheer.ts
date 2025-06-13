@@ -25,6 +25,8 @@ export type PaginatedCheers = {
   totalPages: number;
 };
 
+
+
 // 保存用フォーム状態
 export type CheerFormState = {
   text: string;

@@ -13,19 +13,20 @@ import { Button } from "@/components/ui/button";
 import Pagination from "@/components/ui/Pagination";
 
 interface Props {
-  searchParams: Record<string, string | string[]>;
+  searchParams: Promise<Record<string, string | string[]>>;
 }
 
 export default async function CheersPage({ searchParams }: Props) {
   const { userId } = await auth();
+  const resolvedSearchParams = await searchParams;
 
   let cheers: Cheer[] = [];
   let totalPages = 1;
 
-  const page = Number(searchParams.page ?? 1);
+  const page = Number(resolvedSearchParams.page ?? 1);
 
-  const poseParam = typeof searchParams.pose === 'string' ? searchParams.pose : Array.isArray(searchParams.pose) ? searchParams.pose[0] : '';
-  const muscleParam = typeof searchParams.muscle === 'string' ? searchParams.muscle : Array.isArray(searchParams.muscle) ? searchParams.muscle[0] : '';
+  const poseParam = typeof resolvedSearchParams.pose === 'string' ? resolvedSearchParams.pose : Array.isArray(resolvedSearchParams.pose) ? resolvedSearchParams.pose[0] : '';
+  const muscleParam = typeof resolvedSearchParams.muscle === 'string' ? resolvedSearchParams.muscle : Array.isArray(resolvedSearchParams.muscle) ? resolvedSearchParams.muscle[0] : '';
 
   const poseIds = poseParam ? poseParam.split(",").map(Number) : [];
   const muscleIds = muscleParam ? muscleParam.split(",").map(Number) : [];
