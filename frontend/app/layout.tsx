@@ -9,6 +9,7 @@ import Script from "next/script";
 import SideNav from "@/components/layout/SideNav";
 import BottomNav from "@/components/layout/BottomNav";
 import AppHeader from "@/components/layout/AppHeader";
+import Footer from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
   title: "ムキメンタリー",
@@ -49,6 +50,7 @@ export default function RootLayout({
             </div>
           </div>
           <BottomNav />
+          <Footer />
           <Toaster richColors closeButton position='top-center' />
         </body>
       </html>
