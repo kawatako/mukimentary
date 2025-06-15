@@ -8,11 +8,12 @@ import type { Cheer } from "@/lib/types/cheer";
 import { useTransition, useState } from "react";
 
 type Props = {
-  cheer: Cheer;
-  onDelete: (id: number) => Promise<void>;
+  cheer: Cheer;                       // 掛け声の情報
+  onDelete: (id: number) => Promise<void>; // 削除ハンドラ
+  showImage: boolean;                 // このカードで画像を表示するかどうか
 };
 
-export function CheerCard({ cheer, onDelete }: Props) {
+export function CheerCard({ cheer, onDelete, showImage }: Props) {
   const [isPending, startTransition] = useTransition();
   const [removing, setRemoving] = useState(false);
 
@@ -27,39 +28,39 @@ export function CheerCard({ cheer, onDelete }: Props) {
   };
 
   return (
-    <div className='border border-border rounded-xl bg-card p-4 shadow-sm space-y-3'>
-      {/* 画像 */}
-      {cheer.image_url && (
-        <div className='w-full aspect-[4/3] relative rounded-md overflow-hidden border'>
+    <div className="border border-border rounded-xl bg-card p-4 shadow-sm space-y-3">
+      {/* 画像表示 */}
+      {showImage && cheer.image_url && (
+        <div className="w-full aspect-[4/3] relative rounded-md overflow-hidden border">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={cheer.image_url}
-            alt='掛け声画像'
-            className='w-full h-full object-contain absolute inset-0'
+            alt="掛け声画像"
+            className="w-full h-full object-contain absolute inset-0"
           />
         </div>
       )}
 
-      {/* テキスト情報 */}
-      <div className='text-card-foreground text-sm space-y-1'>
-        <div className='text-base font-bold'>{cheer.text}</div>
-        <div className='text-muted-foreground'>
+      {/* 掛け声テキストと説明 */}
+      <div className="text-card-foreground text-sm space-y-1">
+        <div className="text-base font-bold">{cheer.text}</div>
+        <div className="text-muted-foreground">
           {cheer.muscle?.name && <span>{cheer.muscle.name}</span>}
           {cheer.pose?.name && <span>・{cheer.pose.name}</span>}
         </div>
       </div>
 
-      {/* ボタン群 */}
-      <div className='flex justify-between gap-2 flex-wrap'>
-        <Link href={`/cheers/${cheer.id}/edit`} className='flex-1 min-w-[90px]'>
-          <Button variant='outline' size='sm' className='w-full'>
+      {/* アクションボタン */}
+      <div className="flex justify-between gap-2 flex-wrap">
+        <Link href={`/cheers/${cheer.id}/edit`} className="flex-1 min-w-[90px]">
+          <Button variant="outline" size="sm" className="w-full">
             編集
           </Button>
         </Link>
 
         <Button
-          size='sm'
-          className='flex-1 min-w-[90px] bg-red-500 text-white hover:bg-red-600'
+          size="sm"
+          className="flex-1 min-w-[90px] bg-red-500 text-white hover:bg-red-600"
           disabled={isPending || removing}
           onClick={handleDelete}
         >
@@ -67,9 +68,9 @@ export function CheerCard({ cheer, onDelete }: Props) {
         </Button>
 
         <Button
-          variant='outline'
-          size='sm'
-          className='flex-1 min-w-[90px] flex items-center justify-center gap-1 border-foreground hover:bg-muted'
+          variant="outline"
+          size="sm"
+          className="flex-1 min-w-[90px] flex items-center justify-center gap-1 border-foreground hover:bg-muted"
           onClick={() =>
             window.open(
               `https://twitter.com/intent/tweet?text=${encodeURIComponent(
