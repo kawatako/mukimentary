@@ -1,4 +1,4 @@
-// frontend/components/cheer/GenerateCountInfo.tsx
+// frontend/components/cheer/ui/GenerateCountInfo.tsx
 //回数表示＆シェアボタンUIコンポーネント
 "use client";
 

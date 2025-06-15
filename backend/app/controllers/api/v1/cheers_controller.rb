@@ -34,8 +34,6 @@ module Api
                     .order(created_at: :desc)
                     .offset((page - 1) * per_page)
                     .limit(per_page)
-
-        # --- JSONで返す ---
         render json: {
           cheers: cheers.as_json(include: [:cheer_type, :muscle, :pose]),
           total_pages: total_pages

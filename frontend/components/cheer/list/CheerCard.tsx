@@ -1,4 +1,4 @@
-//frontend/components/cheer/CheerCard.tsx
+//frontend/components/cheer/list/CheerCard.tsx
 "use client";
 
 import Link from "next/link";

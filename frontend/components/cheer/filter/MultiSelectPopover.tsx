@@ -1,8 +1,12 @@
-// components/cheer/MultiSelectPopover.tsx
+// components/cheer/filter/MultiSelectPopover.tsx
 "use client";
 
 import { useState } from "react";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
@@ -18,7 +22,12 @@ interface Props {
   onChange: (ids: number[]) => void;
 }
 
-export function MultiSelectPopover({ label, options, selectedIds, onChange }: Props) {
+export function MultiSelectPopover({
+  label,
+  options,
+  selectedIds,
+  onChange,
+}: Props) {
   const [open, setOpen] = useState(false);
 
   const toggleId = (id: number) => {
@@ -32,14 +41,14 @@ export function MultiSelectPopover({ label, options, selectedIds, onChange }: Pr
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline">
+        <Button variant='outline'>
           {label} ({selectedIds.length})
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-64">
-        <div className="flex flex-col gap-2 max-h-64 overflow-y-auto">
+      <PopoverContent className='w-64 bg-white border border-border rounded-md z-50'>
+        <div className='flex flex-col gap-2 max-h-64 overflow-y-auto'>
           {options.map((opt) => (
-            <label key={opt.id} className="flex items-center gap-2">
+            <label key={opt.id} className='flex items-center gap-2'>
               <Checkbox
                 checked={selectedIds.includes(opt.id)}
                 onCheckedChange={() => toggleId(opt.id)}

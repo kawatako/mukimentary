@@ -1,4 +1,4 @@
-//ftontend/components/cheer/FloatingCreateButton.tsx
+//ftontend/components/cheer/ui/FloatingCreateButton.tsx
 
 "use client";
 
@@ -15,11 +15,11 @@ export function FloatingCreateButton() {
   return (
     <button
       onClick={() => router.push("/cheers/create")}
-      className="fixed bottom-20 right-6 z-50 bg-primary text-white p-4 rounded-full shadow-lg hover:bg-primary/90 transition md:hidden"
+      className="fixed bottom-20 right-6 z-50 bg-primary text-white px-4 py-3 rounded-full shadow-lg hover:bg-primary/90 transition md:hidden flex flex-col items-center text-xs font-medium"
       aria-label="掛け声を作成"
     >
-      <PlusIcon className="w-6 h-6" />
+      <PlusIcon className="w-5 h-5 mb-1" />
+      掛け声作成
     </button>
   );
 }
-

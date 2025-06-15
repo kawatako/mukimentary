@@ -1,4 +1,4 @@
-//frontend/components/cheer/CheerManualForm.tsx
+//frontend/components/cheer/forms/CheerManualForm.tsx
 "use client";
 
 import { useState } from "react";

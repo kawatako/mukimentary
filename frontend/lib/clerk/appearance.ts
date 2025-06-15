@@ -1,4 +1,5 @@
 // lib/clerk/appearance.ts
+//clerkのデザイン設定
 import type { Appearance } from "@clerk/types";
 
 export const clerkAppearance: Appearance = {

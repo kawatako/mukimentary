@@ -2,7 +2,7 @@
 import { notFound } from "next/navigation";
 import { getCheerById } from "@/lib/server/cheers";
 import { getCheerPresets } from "@/lib/server/cheerPresets";
-import EditCheerForm from "@/components/cheer/EditCheerForm";
+import EditCheerForm from "@/components/cheer/forms/EditCheerForm";
 import { updateCheer } from "@/lib/server/cheers";
 import type { CheerFormState } from "@/lib/types/cheer";
 import { redirect } from "next/navigation";

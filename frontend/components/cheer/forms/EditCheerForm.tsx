@@ -1,4 +1,4 @@
-// frontend/components/cheer/EditCheerForm.tsx
+// frontend/components/cheer/forms/EditCheerForm.tsx
 "use client";
 
 import { useState, useEffect } from "react";
