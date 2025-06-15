@@ -4,21 +4,24 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import type { CheerType, Muscle, Pose } from "@/lib/types/prests";
-import type { CheerFormState } from "@/lib/types/cheer";
+import type { CheerFormState,FormState } from "@/lib/types/cheer";
 import { useCheerApi } from "@/lib/hooks/useCheerApi";
-import { useImageUploader } from "@/lib/hooks/useImageUploader";
-import Image from "next/image";
 import { GenerateCountInfo } from "@/components/cheer/ui/GenerateCountInfo";
+import { CheerSelectField } from "@/components/cheer/forms/common/CheerSelectField";
+import { CheerKeywordInput } from "@/components/cheer/forms/common/CheerKeywordInput";
+import { CheerTextInput } from "@/components/cheer/forms/common/CheerTextInput";
+import { CheerImageUploader } from "@/components/cheer/forms/common/CheerImageUploader";
 
 type Props = {
-  cheerTypes: CheerType[];
-  muscles: Muscle[];
-  poses: Pose[];
-  onSubmit: (form: CheerFormState) => void | Promise<void>;
-  remaining: number | null;
-  onChangeRemaining: (value: number | null) => void;
+  cheerTypes: CheerType[];                     // 掛け声タイプの選択肢（セレクト用）
+  muscles: Muscle[];                           // 筋肉部位の選択肢（セレクト用）
+  poses: Pose[];                               // ポーズの選択肢（セレクト用）
+  onSubmit: (form: CheerFormState) => void | Promise<void>; // 掛け声データの保存処理（親から受け取る）
+  remaining: number | null;                    // 残りの生成可能回数（null = 未取得）
+  onChangeRemaining: (value: number | null) => void; // 残り回数を更新するための関数
 };
 
+//画像とキーワードからAIで掛け声を生成するフォームコンポーネント
 export default function CheerImageAiForm({
   cheerTypes,
   muscles,
@@ -27,36 +30,41 @@ export default function CheerImageAiForm({
   remaining,
   onChangeRemaining,
 }: Props) {
-  const [form, setForm] = useState({
+  // 入力フィールドの状態管理（cheerTypeId, muscleId, poseId は number または空文字）
+  const [form, setForm] = useState<FormState>({
     cheerTypeId: "",
     muscleId: "",
     poseId: "",
     keyword: "",
   });
 
+  // アップロードされた画像のURL
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  // 生成された掛け声テキスト
   const [result, setResult] = useState<string>("");
+  // ローディング中かどうか
   const [loading, setLoading] = useState(false);
+  // エラーメッセージ（存在する場合）
   const [error, setError] = useState<string | null>(null);
+  // 掛け声生成APIの呼び出し関数を取得
   const { generateCheerByImage } = useCheerApi();
 
-  const {
-    uploading,
-    uploadedUrl,
-    previewUrl,
-    error: uploadError,
-    handleFileChange,
-    reset,
-  } = useImageUploader();
-
-  const handleChange = <K extends keyof typeof form>(
-    key: K,
-    value: (typeof form)[K]
+  //セレクトボックス変更時のハンドラー
+  const handleChange = (
+    key: "cheerTypeId" | "muscleId" | "poseId",
+    value: number | ""
   ) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
+  //キーワード入力欄の変更ハンドラー
+  const handleKeywordChange = (value: string) => {
+    setForm((prev) => ({ ...prev, keyword: value }));
+  };
+
+  //画像とキーワードを元にAIに掛け声生成を依頼
   const handleGenerate = async () => {
-    if (!uploadedUrl) {
+    if (!imageUrl) {
       setError("画像をアップロードしてください");
       return;
     }
@@ -65,11 +73,10 @@ export default function CheerImageAiForm({
     setResult("");
     try {
       const res = await generateCheerByImage({
-        image_url: uploadedUrl,
-        cheer_type: cheerTypes.find((t) => t.id === Number(form.cheerTypeId))
-          ?.name,
-        muscle: muscles.find((m) => m.id === Number(form.muscleId))?.name,
-        pose: poses.find((p) => p.id === Number(form.poseId))?.name,
+        image_url: imageUrl,
+        cheer_type: cheerTypes.find((t) => t.id === form.cheerTypeId)?.name,
+        muscle: muscles.find((m) => m.id === form.muscleId)?.name,
+        pose: poses.find((p) => p.id === form.poseId)?.name,
         keyword: form.keyword,
       });
       if ("remaining" in res && typeof res.remaining === "number") {
@@ -88,167 +95,97 @@ export default function CheerImageAiForm({
     }
   };
 
+  //生成結果を保存（onSubmit に渡す）
   const handleSave = async () => {
     if (!result) return;
     await onSubmit({
       text: result,
-      cheerTypeId: Number(form.cheerTypeId),
-      muscleId: Number(form.muscleId),
-      poseId: Number(form.poseId),
+      cheerTypeId: form.cheerTypeId,
+      muscleId: form.muscleId,
+      poseId: form.poseId,
       keyword: form.keyword,
-      imageUrl: uploadedUrl,
+      imageUrl: imageUrl,
       cheerMode: "image_ai",
     });
   };
 
   return (
-    <div className='bg-card border border-border rounded-xl shadow-sm p-5 max-w-lg mx-auto space-y-5'>
-      <h2 className='text-xl font-bold text-center text-foreground'>
+    <div className="bg-card border border-border rounded-xl shadow-sm p-5 max-w-lg mx-auto space-y-5">
+      <h2 className="text-xl font-bold text-center text-foreground">
         画像とキーワードからAIで掛け声を生成
       </h2>
 
-      <GenerateCountInfo
-        kind='image_ai'
-        onChangeRemaining={onChangeRemaining}
-      />
+      {/* 残り生成回数の表示 */}
+      <GenerateCountInfo kind="image_ai" onChangeRemaining={onChangeRemaining} />
 
       {/* 画像アップロード */}
-      <div className='space-y-2'>
-        <label className='text-sm font-medium text-muted-foreground block'>
-          画像ファイル(必須)
-        </label>
+      <CheerImageUploader onUploadComplete={(url) => setImageUrl(url)} />
 
-        {/* 擬似ボタン */}
-        <label className='block w-full cursor-pointer rounded-xl border border-dashed border-input bg-white px-4 py-3 text-center text-sm text-muted-foreground hover:bg-gray-50 transition'>
-          画像を選択
-          <input
-            type='file'
-            accept='image/*'
-            onChange={handleFileChange}
-            disabled={uploading}
-            className='hidden'
-          />
-        </label>
+      {/* 各種セレクトボックス（タイプ・筋肉・ポーズ） */}
+      <CheerSelectField
+        label="タイプ（任意）"
+        value={form.cheerTypeId}
+        onChange={(val) => handleChange("cheerTypeId", val)}
+        options={cheerTypes.map((c) => ({
+          value: c.id,
+          label: `${c.name}（${c.description}）`,
+        }))}
+      />
+      <CheerSelectField
+        label="筋肉部位（任意）"
+        value={form.muscleId}
+        onChange={(val) => handleChange("muscleId", val)}
+        options={muscles.map((m) => ({
+          value: m.id,
+          label: `${m.name}（${m.description}）`,
+        }))}
+      />
+      <CheerSelectField
+        label="ポーズ（任意）"
+        value={form.poseId}
+        onChange={(val) => handleChange("poseId", val)}
+        options={poses.map((p) => ({
+          value: p.id,
+          label: `${p.name}（${p.description}）`,
+        }))}
+      />
 
-        {/* ヒント表示 */}
-        {!previewUrl && !uploading && (
-          <p className='text-xs text-muted-foreground text-center'>
-            筋肉やポージングがわかる画像をアップロードしてください
-          </p>
-        )}
+      {/* フリーワード入力欄 */}
+      <CheerKeywordInput value={form.keyword} onChange={handleKeywordChange} />
 
-        {/* プレビュー画像 */}
-        {previewUrl && (
-          <div className='mt-2 space-y-2'>
-            <Image
-              src={previewUrl}
-              alt='画像プレビュー'
-              className='rounded-xl border max-h-40 object-contain mx-auto'
-              width={320}
-              height={240}
-            />
-            <div className='flex justify-center'>
-              <Button
-                type='button'
-                onClick={reset}
-                variant='outline'
-                size='sm'
-                className='rounded-lg'
-              >
-                画像を変更
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {/* エラー表示 */}
-        {uploadError && (
-          <div className='text-sm text-red-600'>{uploadError}</div>
-        )}
-      </div>
-
-      {/* 選択フィールド */}
-      {[
-        { key: "cheerTypeId", label: "タイプ(任意)", options: cheerTypes },
-        { key: "muscleId", label: "筋肉部位(任意)", options: muscles },
-        { key: "poseId", label: "ポーズ(任意)", options: poses },
-      ].map(({ key, label, options }) => (
-        <div key={key} className='space-y-1'>
-          <label className='text-sm font-medium text-muted-foreground'>
-            {label}
-          </label>
-          <select
-            value={form[key as keyof typeof form]}
-            onChange={(e) =>
-              handleChange(key as keyof typeof form, e.target.value)
-            }
-            className='w-full rounded-lg border border-input bg-white px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring'
-            required
-          >
-            <option value=''>選択してください</option>
-            {options.map((opt) => (
-              <option key={opt.id} value={opt.id}>
-                {opt.name}（{opt.description}）
-              </option>
-            ))}
-          </select>
-        </div>
-      ))}
-
-      {/* フリーワード */}
-      <div className='space-y-1'>
-        <label className='text-sm font-medium text-muted-foreground'>
-          フリーワード（任意）
-        </label>
-        <input
-          type='text'
-          maxLength={50}
-          value={form.keyword}
-          onChange={(e) => handleChange("keyword", e.target.value)}
-          className='w-full rounded-lg border border-input bg-white px-3 py-2 text-sm placeholder:text-muted-foreground'
-          placeholder='例：流行語・アニメ名 など(50文字以内)'
-        />
-      </div>
-
-      {/* 生成ボタン */}
+      {/* 掛け声生成ボタン */}
       <Button
-        type='button'
+        type="button"
         onClick={handleGenerate}
-        disabled={
-          loading ||
-          uploading ||
-          !uploadedUrl ||
-          typeof remaining !== "number" ||
-          remaining === 0
-        }
-        className='w-full rounded-xl text-base py-2'
+        disabled={loading || !imageUrl || typeof remaining !== "number" || remaining === 0}
+        className="w-full rounded-xl text-base py-2"
       >
         {loading ? "生成中..." : "画像+AIで掛け声生成"}
       </Button>
 
-      {/* 結果表示 */}
+      {/* 生成結果の表示と保存 */}
       {result && (
-        <div className='space-y-1'>
-          <label className='text-sm font-medium text-muted-foreground'>
+        <div className="space-y-1">
+          <label className="text-sm font-medium text-muted-foreground">
             生成結果（編集可）
           </label>
-          <textarea
-            className='w-full rounded-lg border border-input bg-white px-3 py-2 text-sm resize-none'
-            rows={2}
+          <CheerTextInput
+            label="掛け声テキスト"
             value={result}
-            onChange={(e) => setResult(e.target.value)}
+            onChange={(val) => setResult(val)}
           />
           <Button
-            type='button'
+            type="button"
             onClick={handleSave}
-            className='w-full rounded-xl text-base py-2 mt-2'
+            className="w-full rounded-xl text-base py-2 mt-2"
           >
             この内容で保存
           </Button>
         </div>
       )}
 
-      {error && <div className='text-sm text-red-600'>{error}</div>}
+      {/* エラーメッセージ表示 */}
+      {error && <div className="text-sm text-red-600">{error}</div>}
     </div>
   );
 }

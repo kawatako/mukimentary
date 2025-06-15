@@ -26,7 +26,6 @@ export type PaginatedCheers = {
 };
 
 
-
 // 保存用フォーム状態
 export type CheerFormState = {
   text: string;
@@ -36,6 +35,14 @@ export type CheerFormState = {
   imageUrl?: string | null;
   keyword?: string | null;
   cheerMode: "manual" | "ai" | "image_ai";
+};
+
+//フォーム内部で扱う状態（選択中の項目やキーワード）
+export type FormState = {
+  cheerTypeId: number | "";  // 選択中の掛け声タイプID（未選択は空文字）
+  muscleId: number | "";     // 選択中の筋肉ID（未選択は空文字）
+  poseId: number | "";       // 選択中のポーズID（未選択は空文字）
+  keyword: string;           // フリーワード入力
 };
 
 // 掛け声AI生成リクエスト（テキスト版）

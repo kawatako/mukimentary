@@ -8,26 +8,34 @@ import type { CheerFormState } from "@/lib/types/cheer";
 import { useImageUploader } from "@/lib/hooks/useImageUploader";
 
 type Props = {
-  cheerId: number;
-  muscles: Muscle[];
-  poses: Pose[];
-  initialForm: CheerFormState;
-  onSubmit: (form: CheerFormState) => void | Promise<void>;
+  cheerId: number;                                  // 編集対象の掛け声ID（未使用だが保持）
+  muscles: Muscle[];                               // 筋肉部位の選択肢
+  poses: Pose[];                                   // ポーズの選択肢
+  initialForm: CheerFormState;                     // 初期状態のフォームデータ
+  onSubmit: (form: CheerFormState) => void | Promise<void>; // 保存時の処理（親に渡す）
 };
 
+/**
+ * 掛け声を編集するためのフォームコンポーネント
+ */
 export default function EditCheerForm({
   muscles,
   poses,
   initialForm,
   onSubmit,
 }: Props) {
+  // 入力フォームの状態
   const [form, setForm] = useState<CheerFormState>(initialForm);
+
+  // 入力バリデーションエラー用の状態
   const [error, setError] = useState<string | null>(null);
 
+  // 初期データが変わったときに再設定
   useEffect(() => {
     setForm(initialForm);
   }, [initialForm]);
 
+  // 各フィールドの変更ハンドラ
   const handleChange = <K extends keyof CheerFormState>(
     key: K,
     value: CheerFormState[K]
@@ -35,6 +43,7 @@ export default function EditCheerForm({
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
+  // 画像アップロード用のカスタムフック
   const {
     uploading,
     uploadedUrl,
@@ -44,12 +53,14 @@ export default function EditCheerForm({
     reset,
   } = useImageUploader();
 
+  // アップロード完了後に画像URLをフォームに反映
   useEffect(() => {
     if (uploadedUrl) {
       setForm((prev) => ({ ...prev, imageUrl: uploadedUrl }));
     }
   }, [uploadedUrl]);
 
+  // フォーム送信処理
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.text || form.text.length > 50) {
@@ -67,6 +78,7 @@ export default function EditCheerForm({
     >
       <h2 className="text-lg font-bold text-card-foreground">掛け声を編集</h2>
 
+      {/* 掛け声テキスト入力欄 */}
       <div className="space-y-1">
         <label className="block text-sm font-semibold">掛け声テキスト</label>
         <input
@@ -80,6 +92,7 @@ export default function EditCheerForm({
         />
       </div>
 
+      {/* 筋肉部位の選択 */}
       <div className="space-y-1">
         <label className="block text-sm font-semibold">筋肉部位</label>
         <select
@@ -98,6 +111,7 @@ export default function EditCheerForm({
         </select>
       </div>
 
+      {/* ポーズの選択 */}
       <div className="space-y-1">
         <label className="block text-sm font-semibold">ポーズ</label>
         <select
@@ -120,45 +134,46 @@ export default function EditCheerForm({
       <div className="space-y-2">
         <label className="text-sm font-semibold block">画像（任意）</label>
 
-{/* 現在の画像プレビュー */}
-{form.imageUrl && !previewUrl && (
-  <div className="mb-2">
-    {/* eslint-disable-next-line @next/next/no-img-element */}
-    <img
-      src={form.imageUrl}
-      alt="現在の画像"
-      className="rounded-xl border max-h-40 object-contain mx-auto"
-      width={320}
-      height={240}
-    />
-  </div>
-)}
+        {/* 現在の画像プレビュー */}
+        {form.imageUrl && !previewUrl && (
+          <div className="mb-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={form.imageUrl}
+              alt="現在の画像"
+              className="rounded-xl border max-h-40 object-contain mx-auto"
+              width={320}
+              height={240}
+            />
+          </div>
+        )}
 
-{/* 新しいプレビュー */}
-{previewUrl && (
-  <div className="mb-2">
-    {/* eslint-disable-next-line @next/next/no-img-element */}
-    <img
-      src={previewUrl}
-      alt="プレビュー画像"
-      className="rounded-xl border max-h-40 object-contain mx-auto"
-      width={320}
-      height={240}
-    />
-    <div className="flex justify-center mt-2">
-      <Button
-        type="button"
-        onClick={reset}
-        variant="outline"
-        size="sm"
-        className="rounded-lg"
-      >
-        画像を変更
-      </Button>
-    </div>
-  </div>
-)}
-        {/* アップロードボタン */}
+        {/* 新しいプレビュー */}
+        {previewUrl && (
+          <div className="mb-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={previewUrl}
+              alt="プレビュー画像"
+              className="rounded-xl border max-h-40 object-contain mx-auto"
+              width={320}
+              height={240}
+            />
+            <div className="flex justify-center mt-2">
+              <Button
+                type="button"
+                onClick={reset}
+                variant="outline"
+                size="sm"
+                className="rounded-lg"
+              >
+                画像を変更
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* アップロード用のボタン */}
         <label className="block w-full cursor-pointer rounded-xl border border-dashed border-input bg-white px-4 py-3 text-center text-sm text-muted-foreground hover:bg-gray-50 transition">
           画像を選択
           <input
@@ -170,12 +185,14 @@ export default function EditCheerForm({
           />
         </label>
 
-        {/* エラー表示 */}
+        {/* アップロードエラー表示 */}
         {uploadError && <div className="text-sm text-red-600">{uploadError}</div>}
       </div>
 
+      {/* 入力エラー表示 */}
       {error && <div className="text-destructive text-sm">{error}</div>}
 
+      {/* 送信ボタン */}
       <Button type="submit" className="w-full mt-2">
         保存
       </Button>
