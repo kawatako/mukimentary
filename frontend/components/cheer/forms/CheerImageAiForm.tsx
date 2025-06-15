@@ -1,4 +1,4 @@
-//frontend/components/cheer/CheerImageAiForm.tsx
+//frontend/components/cheer/forms/CheerImageAiForm.tsx
 "use client";
 
 import { useState } from "react";
@@ -8,7 +8,7 @@ import type { CheerFormState } from "@/lib/types/cheer";
 import { useCheerApi } from "@/lib/hooks/useCheerApi";
 import { useImageUploader } from "@/lib/hooks/useImageUploader";
 import Image from "next/image";
-import { GenerateCountInfo } from "@/components/cheer/GenerateCountInfo";
+import { GenerateCountInfo } from "@/components/cheer/ui/GenerateCountInfo";
 
 type Props = {
   cheerTypes: CheerType[];

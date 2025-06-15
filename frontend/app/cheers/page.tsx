@@ -1,13 +1,13 @@
 // frontend/app/cheers/page.tsx
-import { getCheers,deleteCheer } from "@/lib/server/cheers";
+import { getCheers, deleteCheer } from "@/lib/server/cheers";
 import { getCheerPresets } from "@/lib/server/cheerPresets";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import type { Cheer } from "@/lib/types/cheer";
-import CheersList from "@/components/cheer/CheersList";
-import CheersFilter from "@/components/cheer/CheersFilter";
+import CheersList from "@/components/cheer/list/CheersList";
+import CheersFilter from "@/components/cheer/filter/CheersFilter";
 import { AdBanner } from "@/components/ads/AdBanner";
-import { FloatingCreateButton } from "@/components/cheer/FloatingCreateButton";
+import { FloatingCreateButton } from "@/components/cheer/ui/FloatingCreateButton";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Pagination from "@/components/ui/Pagination";
@@ -25,8 +25,18 @@ export default async function CheersPage({ searchParams }: Props) {
 
   const page = Number(resolvedSearchParams.page ?? 1);
 
-  const poseParam = typeof resolvedSearchParams.pose === 'string' ? resolvedSearchParams.pose : Array.isArray(resolvedSearchParams.pose) ? resolvedSearchParams.pose[0] : '';
-  const muscleParam = typeof resolvedSearchParams.muscle === 'string' ? resolvedSearchParams.muscle : Array.isArray(resolvedSearchParams.muscle) ? resolvedSearchParams.muscle[0] : '';
+  const poseParam =
+    typeof resolvedSearchParams.pose === "string"
+      ? resolvedSearchParams.pose
+      : Array.isArray(resolvedSearchParams.pose)
+        ? resolvedSearchParams.pose[0]
+        : "";
+  const muscleParam =
+    typeof resolvedSearchParams.muscle === "string"
+      ? resolvedSearchParams.muscle
+      : Array.isArray(resolvedSearchParams.muscle)
+        ? resolvedSearchParams.muscle[0]
+        : "";
 
   const poseIds = poseParam ? poseParam.split(",").map(Number) : [];
   const muscleIds = muscleParam ? muscleParam.split(",").map(Number) : [];
