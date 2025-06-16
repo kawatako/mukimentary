@@ -1,8 +1,7 @@
 // next.config.ts
 import withPWA from "next-pwa";
-import type { NextConfig } from "next";
 
-const baseConfig: NextConfig = {
+const config = withPWA({
   images: {
     remotePatterns: [
       {
@@ -18,11 +17,6 @@ const baseConfig: NextConfig = {
       },
     ],
   },
-};
-
-// 💡 withPWAに直接渡す（関数型ではなくそのまま合体させる）
-const config: NextConfig = withPWA({
-  ...baseConfig,
   pwa: {
     dest: "public",
     register: true,
