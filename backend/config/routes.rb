@@ -16,6 +16,9 @@ Rails.application.routes.draw do
       resources :muscles, only: [:index]
       resources :poses, only: [:index]
       post "uploads/presign", to: "uploads#presign" #/api/v1/uploads/presignへのPOSTリクエストをApi::V1::UploadsControllerのpresignアクションにルーティング
+      resources :cheer_my_lists, only: [:index, :create, :update, :destroy] do
+        resources :items, controller: "cheer_list_items", only: [:index, :create, :destroy]
+      end
     end
   end
 end

@@ -35,7 +35,7 @@ export default function CheersList({
             key={cheer.id}
             cheer={cheer}
             onDelete={onDelete}
-            showImage={showImages} // ← ここで渡す
+            showImage={showImages}
           />
         ))}
       </div>

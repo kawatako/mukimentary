@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_15_002454) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_15_114218) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -24,6 +24,25 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_15_002454) do
     t.datetime "updated_at", null: false
     t.index ["user_id", "date", "kind"], name: "index_ai_generation_limits_on_user_id_and_date_and_kind", unique: true
     t.index ["user_id"], name: "index_ai_generation_limits_on_user_id"
+  end
+
+  create_table "cheer_list_items", force: :cascade do |t|
+    t.bigint "cheer_my_list_id", null: false
+    t.bigint "cheer_id", null: false
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cheer_id"], name: "index_cheer_list_items_on_cheer_id"
+    t.index ["cheer_my_list_id", "cheer_id"], name: "index_cheer_list_items_on_cheer_my_list_id_and_cheer_id", unique: true
+    t.index ["cheer_my_list_id"], name: "index_cheer_list_items_on_cheer_my_list_id"
+  end
+
+  create_table "cheer_my_lists", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_cheer_my_lists_on_user_id"
   end
 
   create_table "cheer_types", force: :cascade do |t|
@@ -81,6 +100,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_15_002454) do
   end
 
   add_foreign_key "ai_generation_limits", "users"
+  add_foreign_key "cheer_list_items", "cheer_my_lists"
+  add_foreign_key "cheer_list_items", "cheers"
+  add_foreign_key "cheer_my_lists", "users"
   add_foreign_key "cheers", "cheer_types"
   add_foreign_key "cheers", "muscles"
   add_foreign_key "cheers", "poses"

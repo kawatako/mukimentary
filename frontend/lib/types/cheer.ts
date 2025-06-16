@@ -68,3 +68,17 @@ export type CheerGenerateResponse = {
   error?: string; // エラー発生時のみ
 };
 
+// 掛け声マイリスト系
+//マイリストの型
+export type MyList = {
+  id: number;
+  name: string;
+  user_id: number;
+  created_at: string;
+  updated_at: string;
+};
+
+// マイリスト内の掛け声アイテムの型
+export type MyListCheerItem = Cheer & {
+  itemId: number; // cheer_list_items.id に相当
+};

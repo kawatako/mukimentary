@@ -4,7 +4,7 @@ import { PaginatedCheers, CheerFormState } from "@/lib/types/cheer";
 import { fetchWithAuthServer } from "@/lib/server/fetchWithAuthServer";
 import { getBaseUrl } from "@/lib/utils/getBaseUrl";
 
-// 一覧取得（SSR/Server Action用）
+// 全体またはフィルター付きの「自分の掛け声一覧」を取得（SSR/Server Action用）
 export async function getCheers({
   page = 1,
   poseIds = [],
@@ -102,3 +102,5 @@ export async function deleteCheer(id: number) {
   }
   return true;
 }
+
+
