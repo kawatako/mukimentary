@@ -1,12 +1,13 @@
-//✅ frontend/components/cheer/list/CheerDisplayController.tsx
-// 掛け声の画像表示=状態を制御するコンポーネント
+//frontend/components/cheer/list/CheerDisplayController.tsx
+// 掛け声の画像表示=状態とマイリスト一覧モーダルの開閉を制御するコンポーネント
 
 "use client";
 
-import { useState } from "react";
+import { useState, } from "react";
 import type { Cheer } from "@/lib/types/cheer";
 import CheersList from "./CheersList";
 import { Button } from "@/components/ui/button";
+import NavigateMyListModal from "@/components/cheer/mylist/NavigateMyListModal";
 
 type Props = {
   cheers: Cheer[];                  // 掛け声の一覧
@@ -15,20 +16,30 @@ type Props = {
   onDelete: (id: number) => Promise<void>; // 掛け声削除ハンドラ
 };
 
-// 掛け声一覧と、画像の一括表示/非表示切り替えを管理するクライアントコンポーネント
 export default function CheerDisplayController({
   cheers,
   totalPages,
   currentPage,
   onDelete,
 }: Props) {
-  // 画像表示の切り替え状態
+  //画像一括表示ボタンの開閉
   const [showImages, setShowImages] = useState(false);
+  //マイリスト一覧もーだるの開閉
+  const [modalOpen, setModalOpen] = useState(false);
 
   return (
     <div className="space-y-4">
-      {/* 画像表示切り替えボタン */}
-      <div className="text-right">
+      {/* 操作ボタン：中央寄せ＋並列表示（スマホ対応） */}
+      <div className="flex justify-center items-center gap-3 flex-wrap">
+        <Button
+          variant="outline"
+          size="sm"
+          className="text-sm"
+          onClick={() => setModalOpen(true)}
+        >
+          マイリスト一覧
+        </Button>
+
         <Button
           size="sm"
           variant="outline"
@@ -39,13 +50,16 @@ export default function CheerDisplayController({
         </Button>
       </div>
 
+      {/* モーダル本体（選択で遷移） */}
+      <NavigateMyListModal open={modalOpen} onOpenChange={setModalOpen} />
+
       {/* 掛け声一覧 */}
       <CheersList
         cheers={cheers}
         totalPages={totalPages}
         currentPage={currentPage}
         onDelete={onDelete}
-        showImages={showImages} // ← ここがポイント
+        showImages={showImages}
       />
     </div>
   );

@@ -10,7 +10,7 @@ import { FloatingCreateButton } from "@/components/cheer/ui/FloatingCreateButton
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Pagination from "@/components/ui/Pagination";
-import CheerDisplayController from "@/components/cheer/list/CheerDisplayController"; // 👈 追加
+import CheerDisplayController from "@/components/cheer/list/CheerDisplayController";
 
 interface Props {
   searchParams: Promise<Record<string, string | string[]>>;
@@ -56,8 +56,8 @@ export default async function CheersPage({ searchParams }: Props) {
   }
 
   return (
-    <div className="max-w-xl mx-auto px-4 py-8 pb-28 relative">
-      <h1 className="text-xl font-bold text-foreground mb-6 text-center">
+    <div className='max-w-xl mx-auto px-4 py-8 pb-28 relative'>
+      <h1 className='text-xl font-bold text-foreground mb-6 text-center'>
         マイ掛け声ライブラリ
       </h1>
 
@@ -65,27 +65,28 @@ export default async function CheersPage({ searchParams }: Props) {
         <>
           <CheersFilter muscles={muscles} poses={poses} />
 
-          {/* 👇 画像表示切替機能を含めた一覧ラッパー */}
-          <CheerDisplayController
-            cheers={cheers}
-            totalPages={totalPages}
-            currentPage={page}
-            onDelete={async (id: number) => {
-              "use server";
-              await deleteCheer(id);
-              redirect("/cheers");
-            }}
-          />
+          <div className="flex justify-center gap-4 mb-4">
+              <CheerDisplayController
+                cheers={cheers}
+                totalPages={totalPages}
+                currentPage={page}
+                onDelete={async (id: number) => {
+                  "use server";
+                  await deleteCheer(id);
+                  redirect("/cheers");
+                }}
+              />
+          </div>
 
           <Pagination currentPage={page} totalPages={totalPages} />
         </>
       ) : (
-        <div className="text-center text-muted-foreground mt-10 space-y-4">
+        <div className='text-center text-muted-foreground mt-10 space-y-4'>
           <p>掛け声を作成・保存するにはログインが必要です。</p>
-          <Link href="/sign-in">
+          <Link href='/sign-in'>
             <Button
-              variant="default"
-              className="rounded-xl px-5 py-2 text-base"
+              variant='default'
+              className='rounded-xl px-5 py-2 text-base'
             >
               ログインして始める
             </Button>
@@ -93,7 +94,7 @@ export default async function CheersPage({ searchParams }: Props) {
         </div>
       )}
 
-      <div className="mt-6">
+      <div className='mt-6'>
         <AdBanner />
       </div>
 
