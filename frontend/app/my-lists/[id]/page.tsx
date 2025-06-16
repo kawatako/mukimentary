@@ -12,16 +12,17 @@ import Link from "next/link";
 import type { MyList, MyListCheerItem } from "@/lib/types/cheer";
 
 type Props = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 export default async function MyListDetailPage({ params }: Props) {
   const { userId } = await auth();
   if (!userId) redirect("/sign-in");
 
-  const listId = Number(params.id);
+  const { id } = await params;
+  const listId = Number(id);
 
   // 🔍 自分のマイリスト一覧を取得
   const myLists: MyList[] = await getMyLists();
