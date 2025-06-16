@@ -6,13 +6,14 @@ import CheerManualForm from "../forms/CheerManualForm";
 import CheerAiForm from "../forms/CheerAiForm";
 import CheerImageAiForm from "../forms/CheerImageAiForm";
 import type { CheerType, Muscle, Pose } from "@/lib/types/prests";
-import type { CheerFormState } from "@/lib/types/cheer";
+import type { CheerFormState,Cheer } from "@/lib/types/cheer";
 import { useState } from "react";
 
 type Props = {
   cheerTypes: CheerType[];
   muscles: Muscle[];
   poses: Pose[];
+  cheerSamples: Cheer[]; 
   onSubmit: (form: CheerFormState) => void | Promise<void>;
 };
 
@@ -20,6 +21,7 @@ export default function CheerTabs({
   cheerTypes,
   muscles,
   poses,
+  cheerSamples,
   onSubmit,
 }: Props) {
   // グローバルで残り文字から掛け声生成回数のstateを持つ
@@ -64,6 +66,7 @@ export default function CheerTabs({
           muscles={muscles}
           poses={poses}
           onSubmit={onSubmit}
+          cheerSamples={cheerSamples}
           remaining={textAiRemaining}
           onChangeRemaining={setTextAiRemaining}
         />
@@ -74,6 +77,7 @@ export default function CheerTabs({
           muscles={muscles}
           poses={poses}
           onSubmit={onSubmit}
+          cheerSamples={cheerSamples}
           remaining={imageAiRemaining}
           onChangeRemaining={setImageAiRemaining}
         />

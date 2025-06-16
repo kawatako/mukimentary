@@ -25,15 +25,32 @@ export function useCheerApi() {
 
   //POST /api/v1/cheers/share_bonus{ kind: "text_ai" or "image_ai" }
   //シェアボーナス（+1回）を付与API
-  const postShareBonus = async (kind: "text_ai" | "image_ai") => {
-    const res = await fetchWithAuth(`${API_BASE}/api/v1/cheers/share_bonus`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ kind }),
-    });
-    if (!res.ok) throw new Error("ボーナス付与に失敗しました");
-    return await res.json();
-  };
+const postShareBonus = async (kind: "text_ai" | "image_ai") => {
+  const res = await fetchWithAuth(`${API_BASE}/api/v1/cheers/share_bonus`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ kind }),
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.error("share_bonus error:", res.status, errorText);
+
+    if (res.status === 403) {
+      throw new Error("本日のシェアボーナスはすでに付与されています");
+    }
+
+    try {
+      const json = JSON.parse(errorText);
+      throw new Error(json.error || "シェアボーナス付与に失敗しました");
+    } catch {
+      throw new Error("シェアボーナス付与に失敗しました");
+    }
+  }
+
+  return await res.json();
+};
+
 
   // 掛け声AI生成（テキスト）
   const generateCheer = async (data: CheerGenerateRequest): Promise<CheerGenerateResponse> => {

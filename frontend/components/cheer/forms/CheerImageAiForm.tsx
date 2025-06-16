@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import type { CheerType, Muscle, Pose } from "@/lib/types/prests";
-import type { CheerFormState,FormState } from "@/lib/types/cheer";
+import type { CheerFormState,FormState,Cheer } from "@/lib/types/cheer";
 import { useCheerApi } from "@/lib/hooks/useCheerApi";
 import { GenerateCountInfo } from "@/components/cheer/ui/GenerateCountInfo";
 import { CheerSelectField } from "@/components/cheer/forms/common/CheerSelectField";
@@ -17,6 +17,7 @@ type Props = {
   muscles: Muscle[];                           // 筋肉部位の選択肢（セレクト用）
   poses: Pose[];                               // ポーズの選択肢（セレクト用）
   onSubmit: (form: CheerFormState) => void | Promise<void>; // 掛け声データの保存処理（親から受け取る）
+  cheerSamples:Cheer[];                       // シェアボーナスで取得用の掛け声一覧
   remaining: number | null;                    // 残りの生成可能回数（null = 未取得）
   onChangeRemaining: (value: number | null) => void; // 残り回数を更新するための関数
 };
@@ -27,6 +28,7 @@ export default function CheerImageAiForm({
   muscles,
   poses,
   onSubmit,
+  cheerSamples,
   remaining,
   onChangeRemaining,
 }: Props) {
@@ -116,7 +118,7 @@ export default function CheerImageAiForm({
       </h2>
 
       {/* 残り生成回数の表示 */}
-      <GenerateCountInfo kind="image_ai" onChangeRemaining={onChangeRemaining} />
+      <GenerateCountInfo kind="image_ai" onChangeRemaining={onChangeRemaining} cheerSamples={cheerSamples}/>
 
       {/* 画像アップロード */}
       <CheerImageUploader onUploadComplete={(url) => setImageUrl(url)} />

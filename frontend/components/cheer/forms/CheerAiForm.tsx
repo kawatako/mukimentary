@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import type { CheerType, Muscle, Pose } from "@/lib/types/prests";
-import type { CheerFormState,FormState } from "@/lib/types/cheer";
+import type { CheerFormState,FormState,Cheer } from "@/lib/types/cheer";
 import { useCheerApi } from "@/lib/hooks/useCheerApi";
 import { GenerateCountInfo } from "@/components/cheer/ui/GenerateCountInfo";
 import { CheerSelectField } from "@/components/cheer/forms/common/CheerSelectField";
@@ -16,6 +16,7 @@ type Props = {
   muscles: Muscle[];                           // 筋肉部位の選択肢
   poses: Pose[];                               // ポーズの選択肢
   onSubmit: (form: CheerFormState) => void | Promise<void>; // フォーム送信時の処理
+  cheerSamples: Cheer[]                         //シェアボーナスで取得用の掛け声一覧
   remaining: number | null;                    // 残り生成回数（nullの場合は未取得）
   onChangeRemaining: (value: number | null) => void; // 残り使用回数の更新用コールバック
 };
@@ -26,6 +27,7 @@ export default function CheerAiForm({
   muscles,
   poses,
   onSubmit,
+  cheerSamples,
   remaining,
   onChangeRemaining,
 }: Props) {
@@ -103,7 +105,7 @@ export default function CheerAiForm({
         テキストとキーワードからAIで掛け声を生成
       </h2>
 
-      <GenerateCountInfo kind="text_ai" onChangeRemaining={onChangeRemaining} />
+      <GenerateCountInfo kind="text_ai" onChangeRemaining={onChangeRemaining} cheerSamples={cheerSamples}/>
 
       {/* 選択フィールド */}
       <CheerSelectField
