@@ -1,4 +1,5 @@
 // frontend/app/cheers/create/page.tsx
+import { getCheerSamples } from "@/lib/server/cheers";
 import { getCheerPresets } from "@/lib/server/cheerPresets";
 import { createCheer } from "@/lib/server/cheers";
 import CheerTabs from "@/components/cheer/list/CheerTabs";
@@ -8,6 +9,7 @@ import { AdBanner } from "@/components/ads/AdBanner";
 
 export default async function CreateCheerPage() {
   const { cheerTypes, muscles, poses } = await getCheerPresets();
+  const cheerSamples = await getCheerSamples();
 
   async function handleSubmit(form: CheerFormState) {
     "use server";
@@ -25,6 +27,7 @@ export default async function CreateCheerPage() {
         muscles={muscles}
         poses={poses}
         onSubmit={handleSubmit}
+        cheerSamples={cheerSamples}
       />
       <AdBanner />
     </div>

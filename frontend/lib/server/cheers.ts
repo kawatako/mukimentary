@@ -3,6 +3,7 @@ import "server-only";
 import { PaginatedCheers, CheerFormState } from "@/lib/types/cheer";
 import { fetchWithAuthServer } from "@/lib/server/fetchWithAuthServer";
 import { getBaseUrl } from "@/lib/utils/getBaseUrl";
+import {Cheer} from "@/lib/types/cheer"
 
 // 全体またはフィルター付きの「自分の掛け声一覧」を取得（SSR/Server Action用）
 export async function getCheers({
@@ -104,3 +105,16 @@ export async function deleteCheer(id: number) {
 }
 
 
+// サンプル取得用：AI生成画面の掛け声ボーナスのために掛け声を最新順で取得
+// 掛け声のサンプルを取得（全体から数件だけ）
+export async function getCheerSamples(): Promise<Cheer[]> {
+  const API_BASE = getBaseUrl();
+  const res = await fetchWithAuthServer(`${API_BASE}/api/v1/cheers?page=1`);
+
+  if (!res.ok) {
+    throw new Error("掛け声サンプルの取得に失敗しました");
+  }
+
+  const data = await res.json();
+  return data.cheers.slice(0, 20); // 上位20件に制限（必要ならランダム化も可能）
+}

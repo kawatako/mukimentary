@@ -39,6 +39,8 @@ export default function CheerDisplayController({
         >
           マイリスト一覧
         </Button>
+      {/* モーダル本体（選択で遷移） */}
+      <NavigateMyListModal open={modalOpen} onOpenChange={setModalOpen} />
 
         <Button
           size="sm"
@@ -49,9 +51,6 @@ export default function CheerDisplayController({
           {showImages ? "画像を非表示にする" : "画像をすべて表示"}
         </Button>
       </div>
-
-      {/* モーダル本体（選択で遷移） */}
-      <NavigateMyListModal open={modalOpen} onOpenChange={setModalOpen} />
 
       {/* 掛け声一覧 */}
       <CheersList
