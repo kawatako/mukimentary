@@ -30,13 +30,43 @@ export default function RootLayout({
     >
       <html lang='ja'>
         <head>
-        <meta name="google-site-verification" content="1tM9HQU6ncmTSg0mciFZ0F3dCBBkUTLvdrZNbGXagYE" />
-        <Script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9614537995335790"
-          strategy="afterInteractive"
-          crossOrigin="anonymous"
-        />
+          {/* Google Site Verification */}
+          <meta
+            name='google-site-verification'
+            content='1tM9HQU6ncmTSg0mciFZ0F3dCBBkUTLvdrZNbGXagYE'
+          />
+
+          {/* Google AdSense */}
+          <Script
+            async
+            src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9614537995335790'
+            strategy='afterInteractive'
+            crossOrigin='anonymous'
+          />
+
+          {/* Google tag (gtag.js) */}
+          <Script
+            strategy='afterInteractive'
+            src='https://www.googletagmanager.com/gtag/js?id=G-0JLW7EWBJD'
+          />
+          <Script id='gtag-init' strategy='afterInteractive'>
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-0JLW7EWBJD');
+            `}
+          </Script>
+            {/* PWAの設定*/}
+          <link rel='manifest' href='/manifest.json' />
+          <meta name='theme-color' content='#ff6b81' />
+          <meta name='apple-mobile-web-app-capable' content='yes' />
+          <meta
+            name='apple-mobile-web-app-status-bar-style'
+            content='default'
+          />
+          <meta name='apple-mobile-web-app-title' content='Mukimen' />
+          <link rel='apple-touch-icon' href='/icon-192.png' />
         </head>
         <body>
           <div className='flex w-full justify-center'>
