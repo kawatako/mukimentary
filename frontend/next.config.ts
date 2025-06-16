@@ -1,4 +1,4 @@
-// next.config.js
+// next.config.ts
 import withPWA from "next-pwa";
 import type { NextConfig } from "next";
 
@@ -19,8 +19,9 @@ const baseConfig: NextConfig = {
     ],
   },
 };
-//PWAの設定
-export default withPWA({
+
+// 💡 withPWAに直接渡す（関数型ではなくそのまま合体させる）
+const config: NextConfig = withPWA({
   ...baseConfig,
   pwa: {
     dest: "public",
@@ -30,3 +31,4 @@ export default withPWA({
   },
 });
 
+export default config;
