@@ -14,6 +14,12 @@ import Footer from "@/components/layout/Footer";
 export const metadata: Metadata = {
   title: "ムキメンタリー",
   description: "筋肉と掛け声のSNS",
+  themeColor: "#ff6b81",
+  manifest: "/manifest.webmanifest",
+  icons: {
+    icon: "/icon-192.png",
+    apple: "/icon-192.png",
+  },
 };
 
 export default function RootLayout({
@@ -57,16 +63,9 @@ export default function RootLayout({
               gtag('config', 'G-0JLW7EWBJD');
             `}
           </Script>
-            {/* PWAの設定*/}
-          <link rel='manifest' href='/manifest.json' />
+
+          <link rel='manifest' href='/manifest.webmanifest' />
           <meta name='theme-color' content='#ff6b81' />
-          <meta name='apple-mobile-web-app-capable' content='yes' />
-          <meta
-            name='apple-mobile-web-app-status-bar-style'
-            content='default'
-          />
-          <meta name='apple-mobile-web-app-title' content='Mukimen' />
-          <link rel='apple-touch-icon' href='/icon-192.png' />
         </head>
         <body>
           <div className='flex w-full justify-center'>

@@ -1,8 +1,5 @@
 // next.config.ts
-import withPWA from "next-pwa";
-import type { NextConfig } from "next";
-
-const baseConfig = {
+const nextConfig = {
   images: {
     remotePatterns: [
       {
@@ -18,16 +15,6 @@ const baseConfig = {
       },
     ],
   },
-} satisfies NextConfig;
+};
 
-const config = withPWA({
-  ...baseConfig,
-  pwa: {
-    dest: "public",
-    register: true,
-    skipWaiting: true,
-    disable: process.env.NODE_ENV === "development",
-  },
-});
-
-export default config;
+export default nextConfig;
