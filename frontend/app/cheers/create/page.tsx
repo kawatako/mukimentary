@@ -2,7 +2,7 @@
 import { getCheerSamples } from "@/lib/server/cheers";
 import { getCheerPresets } from "@/lib/server/cheerPresets";
 import { createCheer } from "@/lib/server/cheers";
-import CheerTabs from "@/components/cheer/list/CheerTabs";
+import CheerTabs from "@/components/cheer/forms/CheerTabs";
 import { redirect } from "next/navigation";
 import type { CheerFormState } from "@/lib/types/cheer";
 import { AdBanner } from "@/components/ads/AdBanner";

@@ -1,19 +1,19 @@
-// frontend/components/cheer/list/CheerTabs.tsx
+// frontend/components/cheer/forms/CheerTabs.tsx
 "use client";
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import CheerManualForm from "../forms/CheerManualForm";
-import CheerAiForm from "../forms/CheerAiForm";
-import CheerImageAiForm from "../forms/CheerImageAiForm";
+import CheerManualForm from "./CheerManualForm";
+import CheerAiForm from "./CheerAiForm";
+import CheerImageAiForm from "./CheerImageAiForm";
 import type { CheerType, Muscle, Pose } from "@/lib/types/prests";
-import type { CheerFormState,Cheer } from "@/lib/types/cheer";
+import type { CheerFormState, Cheer } from "@/lib/types/cheer";
 import { useState } from "react";
 
 type Props = {
   cheerTypes: CheerType[];
   muscles: Muscle[];
   poses: Pose[];
-  cheerSamples: Cheer[]; 
+  cheerSamples: Cheer[];
   onSubmit: (form: CheerFormState) => void | Promise<void>;
 };
 

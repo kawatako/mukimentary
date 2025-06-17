@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import type { CheerType, Muscle, Pose } from "@/lib/types/prests";
-import type { CheerFormState,FormState,Cheer } from "@/lib/types/cheer";
+import type { CheerFormState, FormState, Cheer } from "@/lib/types/cheer";
 import { useCheerApi } from "@/lib/hooks/useCheerApi";
 import { GenerateCountInfo } from "@/components/cheer/ui/GenerateCountInfo";
 import { CheerSelectField } from "@/components/cheer/forms/common/CheerSelectField";
@@ -12,12 +12,12 @@ import { CheerKeywordInput } from "@/components/cheer/forms/common/CheerKeywordI
 import { CheerTextInput } from "@/components/cheer/forms/common/CheerTextInput";
 
 type Props = {
-  cheerTypes: CheerType[];                     // 掛け声タイプの選択肢
-  muscles: Muscle[];                           // 筋肉部位の選択肢
-  poses: Pose[];                               // ポーズの選択肢
+  cheerTypes: CheerType[]; // 掛け声タイプの選択肢
+  muscles: Muscle[]; // 筋肉部位の選択肢
+  poses: Pose[]; // ポーズの選択肢
   onSubmit: (form: CheerFormState) => void | Promise<void>; // フォーム送信時の処理
-  cheerSamples: Cheer[]                         //シェアボーナスで取得用の掛け声一覧
-  remaining: number | null;                    // 残り生成回数（nullの場合は未取得）
+  cheerSamples: Cheer[]; //シェアボーナスで取得用の掛け声一覧
+  remaining: number | null; // 残り生成回数（nullの場合は未取得）
   onChangeRemaining: (value: number | null) => void; // 残り使用回数の更新用コールバック
 };
 
@@ -46,23 +46,27 @@ export default function CheerAiForm({
 
   const { generateCheer } = useCheerApi();
 
-  /**
-   * フォーム入力変更時のハンドラー（型安全に）
-   */
-  const handleChange = <K extends keyof FormState>(key: K, value: FormState[K]) => {
+  //フォーム入力変更時のハンドラー（型安全に）
+  const handleChange = <K extends keyof FormState>(
+    key: K,
+    value: FormState[K]
+  ) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  /**
-   * AIにより掛け声を生成する処理
-   */
+  //AIにより掛け声を生成する処理
   const handleGenerate = async () => {
+    if (typeof remaining === "number" && remaining <= 0) {
+      setError("本日のAI生成上限に達しています");
+      return;
+    }
     setLoading(true);
     setError(null);
     setResult("");
     try {
       const res = await generateCheer({
-        cheer_type: cheerTypes.find((t) => t.id === Number(form.cheerTypeId))?.name,
+        cheer_type: cheerTypes.find((t) => t.id === Number(form.cheerTypeId))
+          ?.name,
         muscle: muscles.find((m) => m.id === Number(form.muscleId))?.name,
         pose: poses.find((p) => p.id === Number(form.poseId))?.name,
         keyword: form.keyword,
@@ -83,9 +87,7 @@ export default function CheerAiForm({
     }
   };
 
-  /**
-   * 掛け声を保存する処理
-   */
+  //掛け声を保存する処理
   const handleSave = async () => {
     if (!result) return;
     await onSubmit({
@@ -100,16 +102,21 @@ export default function CheerAiForm({
   };
 
   return (
-    <div className="bg-card border border-border rounded-xl shadow-sm p-5 max-w-lg mx-auto space-y-5">
-      <h2 className="text-xl font-bold text-center text-foreground">
+    <div className='bg-card border border-border rounded-xl shadow-sm p-5 max-w-lg mx-auto space-y-5'>
+      <h2 className='text-xl font-bold text-center text-foreground'>
         テキストとキーワードからAIで掛け声を生成
       </h2>
 
-      <GenerateCountInfo kind="text_ai" onChangeRemaining={onChangeRemaining} cheerSamples={cheerSamples}/>
+      <GenerateCountInfo
+        kind='text_ai'
+        remaining={remaining}
+        onChangeRemaining={onChangeRemaining}
+        cheerSamples={cheerSamples}
+      />
 
       {/* 選択フィールド */}
       <CheerSelectField
-        label="タイプ（任意）"
+        label='タイプ（任意）'
         value={form.cheerTypeId}
         onChange={(val) => handleChange("cheerTypeId", val)}
         options={cheerTypes.map((c) => ({
@@ -118,7 +125,7 @@ export default function CheerAiForm({
         }))}
       />
       <CheerSelectField
-        label="筋肉部位（任意）"
+        label='筋肉部位（任意）'
         value={form.muscleId}
         onChange={(val) => handleChange("muscleId", val)}
         options={muscles.map((m) => ({
@@ -127,7 +134,7 @@ export default function CheerAiForm({
         }))}
       />
       <CheerSelectField
-        label="ポーズ（任意）"
+        label='ポーズ（任意）'
         value={form.poseId}
         onChange={(val) => handleChange("poseId", val)}
         options={poses.map((p) => ({
@@ -137,33 +144,36 @@ export default function CheerAiForm({
       />
 
       {/* キーワード入力 */}
-      <CheerKeywordInput value={form.keyword} onChange={(val) => handleChange("keyword", val)} />
+      <CheerKeywordInput
+        value={form.keyword}
+        onChange={(val) => handleChange("keyword", val)}
+      />
 
       {/* 掛け声生成ボタン */}
       <Button
-        type="button"
+        type='button'
         onClick={handleGenerate}
         disabled={loading || typeof remaining !== "number" || remaining === 0}
-        className="w-full rounded-xl text-base py-2"
+        className='w-full rounded-xl text-base py-2'
       >
         {loading ? "生成中..." : "AIで掛け声生成"}
       </Button>
 
       {/* 結果表示と編集 */}
       {result && (
-        <div className="space-y-1">
-          <label className="text-sm font-medium text-muted-foreground">
+        <div className='space-y-1'>
+          <label className='text-sm font-medium text-muted-foreground'>
             生成結果（編集可）
           </label>
           <CheerTextInput
-            label="掛け声テキスト"
+            label='掛け声テキスト'
             value={result}
             onChange={(val) => setResult(val)}
           />
           <Button
-            type="button"
+            type='button'
             onClick={handleSave}
-            className="w-full rounded-xl text-base py-2 mt-2"
+            className='w-full rounded-xl text-base py-2 mt-2'
           >
             この内容で保存
           </Button>
@@ -171,7 +181,7 @@ export default function CheerAiForm({
       )}
 
       {/* エラー表示 */}
-      {error && <div className="text-sm text-red-600">{error}</div>}
+      {error && <div className='text-sm text-red-600'>{error}</div>}
     </div>
   );
 }

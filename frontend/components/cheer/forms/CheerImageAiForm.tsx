@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import type { CheerType, Muscle, Pose } from "@/lib/types/prests";
-import type { CheerFormState,FormState,Cheer } from "@/lib/types/cheer";
+import type { CheerFormState, FormState, Cheer } from "@/lib/types/cheer";
 import { useCheerApi } from "@/lib/hooks/useCheerApi";
 import { GenerateCountInfo } from "@/components/cheer/ui/GenerateCountInfo";
 import { CheerSelectField } from "@/components/cheer/forms/common/CheerSelectField";
@@ -13,12 +13,12 @@ import { CheerTextInput } from "@/components/cheer/forms/common/CheerTextInput";
 import { CheerImageUploader } from "@/components/cheer/forms/common/CheerImageUploader";
 
 type Props = {
-  cheerTypes: CheerType[];                     // 掛け声タイプの選択肢（セレクト用）
-  muscles: Muscle[];                           // 筋肉部位の選択肢（セレクト用）
-  poses: Pose[];                               // ポーズの選択肢（セレクト用）
+  cheerTypes: CheerType[]; // 掛け声タイプの選択肢（セレクト用）
+  muscles: Muscle[]; // 筋肉部位の選択肢（セレクト用）
+  poses: Pose[]; // ポーズの選択肢（セレクト用）
   onSubmit: (form: CheerFormState) => void | Promise<void>; // 掛け声データの保存処理（親から受け取る）
-  cheerSamples:Cheer[];                       // シェアボーナスで取得用の掛け声一覧
-  remaining: number | null;                    // 残りの生成可能回数（null = 未取得）
+  cheerSamples: Cheer[]; // シェアボーナスで取得用の掛け声一覧
+  remaining: number | null; // 残りの生成可能回数（null = 未取得）
   onChangeRemaining: (value: number | null) => void; // 残り回数を更新するための関数
 };
 
@@ -70,6 +70,10 @@ export default function CheerImageAiForm({
       setError("画像をアップロードしてください");
       return;
     }
+    if (typeof remaining === "number" && remaining <= 0) {
+      setError("本日のAI生成上限に達しています");
+      return;
+    }
     setLoading(true);
     setError(null);
     setResult("");
@@ -112,20 +116,25 @@ export default function CheerImageAiForm({
   };
 
   return (
-    <div className="bg-card border border-border rounded-xl shadow-sm p-5 max-w-lg mx-auto space-y-5">
-      <h2 className="text-xl font-bold text-center text-foreground">
+    <div className='bg-card border border-border rounded-xl shadow-sm p-5 max-w-lg mx-auto space-y-5'>
+      <h2 className='text-xl font-bold text-center text-foreground'>
         画像とキーワードからAIで掛け声を生成
       </h2>
 
       {/* 残り生成回数の表示 */}
-      <GenerateCountInfo kind="image_ai" onChangeRemaining={onChangeRemaining} cheerSamples={cheerSamples}/>
+      <GenerateCountInfo
+        kind='image_ai'
+        remaining={remaining}
+        onChangeRemaining={onChangeRemaining}
+        cheerSamples={cheerSamples}
+      />
 
       {/* 画像アップロード */}
       <CheerImageUploader onUploadComplete={(url) => setImageUrl(url)} />
 
       {/* 各種セレクトボックス（タイプ・筋肉・ポーズ） */}
       <CheerSelectField
-        label="タイプ（任意）"
+        label='タイプ（任意）'
         value={form.cheerTypeId}
         onChange={(val) => handleChange("cheerTypeId", val)}
         options={cheerTypes.map((c) => ({
@@ -134,7 +143,7 @@ export default function CheerImageAiForm({
         }))}
       />
       <CheerSelectField
-        label="筋肉部位（任意）"
+        label='筋肉部位（任意）'
         value={form.muscleId}
         onChange={(val) => handleChange("muscleId", val)}
         options={muscles.map((m) => ({
@@ -143,7 +152,7 @@ export default function CheerImageAiForm({
         }))}
       />
       <CheerSelectField
-        label="ポーズ（任意）"
+        label='ポーズ（任意）'
         value={form.poseId}
         onChange={(val) => handleChange("poseId", val)}
         options={poses.map((p) => ({
@@ -157,29 +166,34 @@ export default function CheerImageAiForm({
 
       {/* 掛け声生成ボタン */}
       <Button
-        type="button"
+        type='button'
         onClick={handleGenerate}
-        disabled={loading || !imageUrl || typeof remaining !== "number" || remaining === 0}
-        className="w-full rounded-xl text-base py-2"
+        disabled={
+          loading ||
+          !imageUrl ||
+          typeof remaining !== "number" ||
+          remaining === 0
+        }
+        className='w-full rounded-xl text-base py-2'
       >
         {loading ? "生成中..." : "画像+AIで掛け声生成"}
       </Button>
 
       {/* 生成結果の表示と保存 */}
       {result && (
-        <div className="space-y-1">
-          <label className="text-sm font-medium text-muted-foreground">
+        <div className='space-y-1'>
+          <label className='text-sm font-medium text-muted-foreground'>
             生成結果（編集可）
           </label>
           <CheerTextInput
-            label="掛け声テキスト"
+            label='掛け声テキスト'
             value={result}
             onChange={(val) => setResult(val)}
           />
           <Button
-            type="button"
+            type='button'
             onClick={handleSave}
-            className="w-full rounded-xl text-base py-2 mt-2"
+            className='w-full rounded-xl text-base py-2 mt-2'
           >
             この内容で保存
           </Button>
@@ -187,7 +201,7 @@ export default function CheerImageAiForm({
       )}
 
       {/* エラーメッセージ表示 */}
-      {error && <div className="text-sm text-red-600">{error}</div>}
+      {error && <div className='text-sm text-red-600'>{error}</div>}
     </div>
   );
 }
