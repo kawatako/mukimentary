@@ -24,8 +24,9 @@ export default async function MyListDetailPage({ params }: Props) {
   const { id } = await params;
   const listId = Number(id);
 
-  // 🔍 自分のマイリスト一覧を取得
+  //  自分のマイリスト一覧を取得
   const myLists: MyList[] = await getMyLists();
+  //その中から「URLのid（例: `/my-lists/2` なら2）」に該当するマイリストを探す
   const targetList = myLists.find((list) => list.id === listId);
 
   if (!targetList) {
@@ -39,7 +40,7 @@ export default async function MyListDetailPage({ params }: Props) {
     );
   }
 
-  // 💬 マイリスト内の掛け声＋itemIdを取得
+  //  マイリスト内の掛け声＋itemIdを取得
   const cheers: MyListCheerItem[] = await getCheersByMyListId(listId);
 
   return (
@@ -47,9 +48,16 @@ export default async function MyListDetailPage({ params }: Props) {
       <h1 className="text-xl font-bold text-center">{targetList.name}</h1>
 
       {cheers.length === 0 ? (
-        <p className="text-center text-muted-foreground">
-          このリストには掛け声が登録されていません。
-        </p>
+    <div className="text-center text-muted-foreground space-y-4 text-sm max-w-md mx-auto py-10">
+      <p className="text-base font-semibold text-foreground">このマイリストはまだ空です</p>
+      <p>
+        お気に入りの掛け声をこのリストに保存できます。<br />
+        「マイリスト」ボタンから追加して、⼤会や発表の前に見返すことができます。
+      </p>
+      <p>
+        掛け声一覧ページに戻って、お気に入りを追加してみましょう！
+      </p>
+    </div>
       ) : (
         <MyListCheerDisplayController
           cheers={cheers}
@@ -58,6 +66,7 @@ export default async function MyListDetailPage({ params }: Props) {
             await deleteCheerFromMyList(listId, itemId);
             redirect(`/my-lists/${listId}`);
           }}
+          listName={targetList.name}
         />
       )}
     </div>
