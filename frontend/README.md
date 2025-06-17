@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💪 Mukimentary（ムキメンタリー）
 
-## Getting Started
+**筋肉 ✖️ AI = ユーモアな掛け声**で  
+マッチョもマッチョの友達も、楽しく大会に挑めるエンタメSNSです。
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🌟 サービス概要
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Mukimentaryは、筋トレやフィジーク大会を盛り上げるための掛け声を  
+AIがユニークに生成し、保存・共有できるSNSです。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- 自由入力・AI・画像から選べる3モードで掛け声を生成
+- 掛け声をマイリストに保存して大会・練習用に活用
+- 「#ムキメンタリー」をつけてSNSシェアで盛り上がれる
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+🎯 [サービスを使ってみる](https://www.mukimentary.com/)
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🔧 主な機能
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| 機能 | 内容 |
+|------|------|
+| ✍️ Manualモード | 自分で自由に掛け声を入力 |
+| 🤖 AIモード | 筋肉・ポーズ・キーワードからGPT-4が掛け声を生成 |
+| 🖼️ 画像AIモード | マッチョ画像から掛け声を生成（Vision API） |
+| 📁 マイリスト機能 | テーマ別に掛け声を保存・編集・削除・一括コピー |
+| 📢 シェア機能 | X（旧Twitter）に掛け声をシェア・コピー |
+| 📱 モバイル最適化 | PWA対応、モバイルUIに特化した設計 |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🧑‍🤝‍🧑 ターゲットユーザー
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- 筋トレを日課にしている人
+- フィジーク・ボディビル大会に出場する選手
+- マッチョな友人を応援したい人
+- SNSで筋肉投稿を楽しみたい人
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🎨 UI・デザインへのこだわり
+
+> 「やさしい筋肉系SNS」を目指したUI・配色設計
+
+| 要素 | 色 | 意図 |
+|------|----|------|
+| アクセントカラー | `#ff6b81`（ピンク） | 筋肉感と親しみのバランス |
+| サブアクセント | `#ffa94d`（オレンジ） | 活力や楽しさを演出 |
+| 背景 | `#f9fafb` | 優しい白、長時間でも疲れにくい |
+| モバイル対応 | ✅ | スマホ中心、PWA対応済み |
+
+InstagramとBEAMSの中間のような、  
+「ポップだけど本気」の雰囲気を意識しています。
+
+---
+
+## 🧠 技術スタック
+
+| カテゴリ | 技術 |
+|----------|------|
+| フロントエンド | Next.js 15 App Router（RSC + Server Actions） |
+| スタイリング | Tailwind CSS v4 / Shadcn UI |
+| バックエンド | Ruby on Rails 7（APIモード） |
+| データベース | PostgreSQL |
+| 認証 | Clerk.dev |
+| AI | OpenAI GPT-4 + Vision API |
+| ストレージ | S3（LocalStackでローカル再現） |
+| デプロイ | Vercel（Frontend）＋ Render（Backend） |
+
+---
+
+## 🚀 セットアップ（Docker）
+
+git clone https://github.com/yourname/mukimentary.git
+cd mukimentary
+docker-compose up --build
+http://localhost:3000 → フロントエンド（Next.js）
+http://localhost:4000 → バックエンド（Rails API）
+
+※ .env や Clerk/S3/OpenAI の環境変数が必要です。
+
+
+🔥 シェア機能：生成文言例
+AIがあなたの筋トレを盛り上げる📣
+「バズーカ砲より厚い友情」 素敵な掛け声を作ってシェアしよう💪
+#ムキメンタリー https://mukimentary.com
+Xボタンから1クリックで投稿できます。
+
+📁 マイリスト活用例
+「2025レモンクラシック決勝用」
+「大腿四頭筋だけまとめた応援リスト」
+「筋トレが嫌になったときに見るコレクション」
+→ リスト内の掛け声を一括でコピー・友達と共有できます！
+
+🏁 開発の背景
+筋トレ好きな友人の大会出場をきっかけに、
+AIを使って「筋肉 × ユーモア」で人を元気にできるアプリを作りたいと思いました。
+真面目なだけじゃなく、笑って筋トレを楽しめる空間を、テクノロジーで実現しています。
+

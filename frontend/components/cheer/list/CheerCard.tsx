@@ -49,7 +49,7 @@ export function CheerCard({ cheer, onDelete, showImage }: Props) {
         <div className="text-base font-bold">{cheer.text}</div>
         <div className="text-muted-foreground">
           {cheer.muscle?.name && <span>{cheer.muscle.name}</span>}
-          {cheer.pose?.name && <span>・{cheer.pose.name}</span>}
+          {cheer.pose?.name && <span>/{cheer.pose.name}</span>}
         </div>
       </div>
 

@@ -48,12 +48,33 @@ export function GenerateCountInfo({ kind, onChangeRemaining, cheerSamples }: Pro
 
 const handleBonusGranted = async () => {
   try {
+    // 現在の残り回数を保存（後で比較用）
+    const before = remaining;
+    // API経由でシェアボーナスを申請（+1回を付与）
     await postShareBonus(kind);
-    toast.success("AI生成回数が+1回されました!");
-    fetchLimit();
+    // 状態更新のために再取得（setState内で更新される）
+    await fetchLimit();
+    // 正確な比較のために、もう一度最新の回数情報を取得
+    const after = await getAiLimit(kind);
+    // ボーナスによる差分を計算
+    const diff = after.remaining - (before ?? 0);
+    // 差分があれば成功メッセージ、なければ注意メッセージ
+    if (diff > 0) {
+      toast.success(`AI生成回数が+${diff}回されました!`);
+    } else {
+      toast.info("AI生成回数は変わりませんでした");
+    }
+    // 状態を明示的に更新（親コンポーネント連携用）
+    setRemaining(after.remaining);
+    setCanShare(after.can_share);
+    onChangeRemaining?.(after.remaining);
+
   } catch (err) {
-    if (err instanceof Error && err.message.includes("本日のシェアボーナスはすでに付与されています")) {
-      toast.info("今日はもうシェアボーナスを受け取っています");
+    // catch は postShareBonus() が本当に失敗したときだけ処理する
+    if (
+      err instanceof Error &&
+      err.message.includes("本日のシェアボーナスはすでに付与されています")
+    ) {
     } else {
       toast.error("シェアボーナス付与に失敗しました、しばらく経ってからお試しください");
     }
