@@ -1,5 +1,6 @@
 // frontend/lib/hooks/useCheerApi.ts
 //掛け声API & AIリミットAPIまとめクライアント専用（JWT認証トークン自動付与）
+"use client";
 
 import { useAuthFetch } from "@/lib/hooks/useAuthFetch";
 import { getBaseUrl } from "@/lib/utils/getBaseUrl";

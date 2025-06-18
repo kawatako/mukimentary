@@ -1,5 +1,6 @@
 // frontend/lib/hooks/useAuthFetch.ts
 //Clerkなどの認証システムから自動的にJWTトークン（ユーザの認証情報）を取得し、APIリクエスト時のAuthorizationヘッダーに付与
+"use client";
 import { useAuth } from "@clerk/nextjs"; //Clerkの認証フック
 import { useCallback } from "react"; //同じ関数を毎回再生成しないためのReact標準フック
 

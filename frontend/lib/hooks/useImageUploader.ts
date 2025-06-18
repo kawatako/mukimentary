@@ -1,4 +1,5 @@
 // frontend/lib/hooks/useImageUploader.ts
+"use client";
 import { useState } from "react";
 import { useAuthFetch } from "@/lib/hooks/useAuthFetch";
 import { getBaseUrl } from "@/lib/utils/getBaseUrl";
