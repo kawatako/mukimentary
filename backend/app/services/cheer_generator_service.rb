@@ -82,7 +82,14 @@ class CheerGeneratorService
     cheer_text = response.dig("choices", 0, "message", "content").to_s.strip
 
     # 出力が制限された場合（フィルター検知）→ テキストのみの生成にフォールバック
-    if cheer_text.include?("申し訳ありません") || cheer_text.include?("コンテンツに関する制限")
+    fallback_triggers = [
+      "申し訳ありません",
+      "申し訳ない",
+      "コンテンツに関する制限",
+      "この画像の詳細についてはわかりません"
+    ]
+
+    if fallback_triggers.any? { |phrase| cheer_text.include?(phrase) }
       Rails.logger.warn("Vision出力が制限されたため、テキストベース生成にfallbackします")
       return self.generate_from_text(**locals)
     end
