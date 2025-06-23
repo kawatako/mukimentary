@@ -1,16 +1,15 @@
 // app/muscle-guide/page.tsx
 export const dynamic = "force-static";
+
 import { PoseList } from "@/components/muscle-guide/PoseList";
 import { MuscleList } from "@/components/muscle-guide/MuscleList";
-import { TabSwitcher } from "@/components/muscle-guide/TabSwitcher"
+import { TabSwitcher } from "@/components/muscle-guide/TabSwitcher";
 
-type Props = {
-  searchParams?: {
-    tab?: string;
-  };
-};
-
-export default function MuscleGuidePage({ searchParams }: Props) {
+export default async function MuscleGuidePage({
+  searchParams,
+}: {
+  searchParams?: Record<string, string | string[]>;
+}) {
   const tab = searchParams?.tab === "muscle" ? "muscle" : "pose";
 
   return (
