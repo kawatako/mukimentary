@@ -23,41 +23,48 @@ type LimitResponse = {
 
 export function GenerateCountInfo({
   kind,
-  remaining,
+  remaining: initialRemaining,
   onChangeRemaining,
   cheerSamples,
 }: Props) {
+  // ローカルの表示用状態（初期値は親から）
+  const [remaining, setRemaining] = useState<number | null>(initialRemaining);
   const [canShare, setCanShare] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
 
   const { getAiLimit, postShareBonus } = useCheerApi();
 
-  // 生成可能回数取得（初回表示時やkind変更時に呼ばれる）
-  const fetchLimit = async () => {
-    try {
-      const data: LimitResponse = await getAiLimit(kind);
-      onChangeRemaining?.(data.remaining);
-      setCanShare(data.can_share);
-    } catch {
-      toast.error("回数残数の取得に失敗しました");
-      onChangeRemaining?.(0);
-    }
-  };
-
+  // 親から渡された remaining が更新された場合にローカルにも反映
   useEffect(() => {
+    setRemaining(initialRemaining);
+  }, [initialRemaining]);
+
+  // 初回表示・kind変更時に現在の残数とシェア可否を取得
+  useEffect(() => {
+    const fetchLimit = async () => {
+      try {
+        const data: LimitResponse = await getAiLimit(kind);
+        setRemaining(data.remaining);
+        onChangeRemaining?.(data.remaining);
+        setCanShare(data.can_share);
+      } catch {
+        toast.error("回数残数の取得に失敗しました");
+        setRemaining(null);
+        onChangeRemaining?.(0);
+      }
+    };
     fetchLimit();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [kind]);
 
+  // シェア完了後のボーナス反映
   const handleBonusGranted = async () => {
     try {
-      const before = remaining;
+      const before = remaining ?? 0;
 
       await postShareBonus(kind);
-      await fetchLimit(); // UI反映用に更新
-
       const after = await getAiLimit(kind);
-      const diff = after.remaining - (before ?? 0);
+      const diff = after.remaining - before;
 
       if (diff > 0) {
         toast.success(`AI生成回数が+${diff}回されました!`);
@@ -65,6 +72,7 @@ export function GenerateCountInfo({
         toast.info("AI生成回数は変わりませんでした");
       }
 
+      setRemaining(after.remaining);
       onChangeRemaining?.(after.remaining);
       setCanShare(after.can_share);
     } catch (err) {
@@ -72,7 +80,6 @@ export function GenerateCountInfo({
         err instanceof Error &&
         err.message.includes("本日のシェアボーナスはすでに付与されています")
       ) {
-        // メッセージは抑制（UI上は表示しない）
       } else {
         toast.error("シェアボーナス付与に失敗しました、しばらく経ってからお試しください");
       }
@@ -82,7 +89,8 @@ export function GenerateCountInfo({
   return (
     <div className="flex flex-col gap-3 w-full text-sm px-2 text-foreground">
       <div className="text-center">
-        今日の残りAI生成回数: <span className="font-bold">{remaining ?? "-"}</span>
+        今日の残りAI生成回数:{" "}
+        <span className="font-bold">{remaining ?? "-"}</span>
       </div>
 
       {canShare && (
