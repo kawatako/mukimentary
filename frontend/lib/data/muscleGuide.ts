@@ -90,7 +90,7 @@ export const muscles: Muscle[] = [
     id: "pectoralis-major",
     name: "大胸筋",
     slug: "pectoralis-major",
-    image: "/muscles/pectoralis_major.png",
+    image: "/muscles/pectoralis_major.jpg",
     description: "胸の中央に位置する筋肉で、厚みのある胸板を作るのに重要。ベンチプレスや腕立て伏せで鍛えられ、大会では上体の迫力を左右する",
     category: "front",
     sort_order: 1,
@@ -108,7 +108,7 @@ export const muscles: Muscle[] = [
     id: "obliques",
     name: "腹斜筋",
     slug: "obliques",
-    image: "/muscles/obliques.png",
+    image: "/muscles/obliques.jpg",
     description: "お腹の脇にある筋肉で、くびれを作るのに重要。体をひねる動作で鍛えられ、ウエストラインを際立たせる",
     category: "front",
     sort_order: 3,
@@ -176,6 +176,15 @@ export const muscles: Muscle[] = [
     category: "arm",
     sort_order: 10,
   },
+    {
+    id: "gluteus",
+    name: "大臀筋",
+    slug: "gluteus",
+    image: "/muscles/gluteus.png",
+    description: "お尻の筋肉で、ヒップラインを形作る。スクワットやヒップスラストで鍛えられ、後ろ姿の印象を左右する",
+    category: "legs",
+    sort_order: 11,
+  },
   {
     id: "quadriceps",
     name: "大腿四頭筋",
@@ -183,7 +192,7 @@ export const muscles: Muscle[] = [
     image: "/muscles/quadriceps.png",
     description: "太ももの前面にある大きな筋肉群で、スクワットなどで鍛えられる。脚の迫力を演出する",
     category: "legs",
-    sort_order: 11,
+    sort_order: 12,
   },
   {
     id: "hamstrings",
@@ -192,7 +201,7 @@ export const muscles: Muscle[] = [
     image: "/muscles/hamstrings.png",
     description: "太もも裏側の筋肉群で、スプリントやヒップヒンジ動作で活躍。前面とのバランスが重要",
     category: "legs",
-    sort_order: 12,
+    sort_order: 13,
   },
   {
     id: "calf",
@@ -201,15 +210,7 @@ export const muscles: Muscle[] = [
     image: "/muscles/calf.png",
     description: "ふくらはぎの筋肉。全身のシルエットを引き締め、歩行や姿勢の安定にも関わる",
     category: "legs",
-    sort_order: 13,
-  },
-  {
-    id: "gluteus",
-    name: "大臀筋",
-    slug: "gluteus",
-    image: "/muscles/gluteus.png",
-    description: "お尻の筋肉で、ヒップラインを形作る。スクワットやヒップスラストで鍛えられ、後ろ姿の印象を左右する",
-    category: "legs",
     sort_order: 14,
   },
+
 ];
