@@ -30,19 +30,19 @@ export default function CheerTabs({
   const [imageAiRemaining, setImageAiRemaining] = useState<number | null>(null);
 
   return (
-    <Tabs defaultValue='manual' className='w-full'>
+    <Tabs defaultValue='ai' className='w-full'>
       <TabsList className='w-full max-w-lg mx-auto flex justify-between bg-accent/10 border border-border rounded-xl px-2 py-1 gap-2 shadow-sm'>
-        <TabsTrigger
-          value='manual'
-          className='flex-1 text-center data-[state=active]:bg-card data-[state=active]:text-foreground rounded-lg px-4 py-1 text-sm font-semibold'
-        >
-          Manual
-        </TabsTrigger>
         <TabsTrigger
           value='ai'
           className='flex-1 text-center data-[state=active]:bg-card data-[state=active]:text-foreground rounded-lg px-4 py-1 text-sm font-semibold'
         >
           AI
+        </TabsTrigger>
+        <TabsTrigger
+          value='manual'
+          className='flex-1 text-center data-[state=active]:bg-card data-[state=active]:text-foreground rounded-lg px-4 py-1 text-sm font-semibold'
+        >
+          Manual
         </TabsTrigger>
         <TabsTrigger
           value='image_ai'
@@ -51,15 +51,6 @@ export default function CheerTabs({
           画像AI
         </TabsTrigger>
       </TabsList>
-
-      <TabsContent value='manual'>
-        <CheerManualForm
-          cheerTypes={cheerTypes}
-          muscles={muscles}
-          poses={poses}
-          onSubmit={onSubmit}
-        />
-      </TabsContent>
       <TabsContent value='ai'>
         <CheerAiForm
           cheerTypes={cheerTypes}
@@ -69,6 +60,14 @@ export default function CheerTabs({
           cheerSamples={cheerSamples}
           remaining={textAiRemaining}
           onChangeRemaining={setTextAiRemaining}
+        />
+      </TabsContent>
+      <TabsContent value='manual'>
+        <CheerManualForm
+          cheerTypes={cheerTypes}
+          muscles={muscles}
+          poses={poses}
+          onSubmit={onSubmit}
         />
       </TabsContent>
       <TabsContent value='image_ai'>

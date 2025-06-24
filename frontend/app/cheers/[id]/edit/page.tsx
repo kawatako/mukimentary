@@ -5,6 +5,9 @@ import { getCheerPresets } from "@/lib/server/cheerPresets";
 import EditCheerForm from "@/components/cheer/forms/EditCheerForm";
 import { updateCheer } from "@/lib/server/cheers";
 import type { CheerFormState } from "@/lib/types/cheer";
+import { auth } from "@clerk/nextjs/server";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
 
 export default async function EditCheerPage({ 
@@ -12,6 +15,20 @@ export default async function EditCheerPage({
 }: { 
   params: Promise<{ id: string }> 
 }) {
+const { userId } = await auth();
+
+if (!userId) {
+  return (
+    <div className='max-w-xl mx-auto py-20 text-center text-muted-foreground space-y-4'>
+      <p>掛け声を編集するにはログインが必要です。</p>
+      <Link href='/sign-in'>
+        <Button variant='default' className='rounded-xl px-5 py-2 text-base'>
+          ログインして編集する
+        </Button>
+      </Link>
+    </div>
+  );
+}
   const { id } = await params;
   const cheerId = Number(id);
   const cheer = await getCheerById(cheerId);
